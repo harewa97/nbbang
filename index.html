@@ -3,7 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>딱깔끔 N빵 - 로그인 없는 초간단 모임·여행 정산기</title>
+  <meta name="google-site-verification" content="JQ3Quspb8EWwvXcai_F4ET9W71wRz3HKvJqYdyj6WDQ" />
+  <meta name="naver-site-verification" content="61ad75b33cfc9418a86167ffe6167c37e3680a95" />
+  <title>딱깔끔 N빵 - 로그인 없는 초간단 모임·여행 정산기 (최소 송금 계산)</title>
+  <meta name="description" content="앱 설치나 회원가입 없이 링크 하나로 끝내는 모임·여행 N빵 정산기. 해외여행 다중 통화 환율 계산, 최소 송금 횟수 자동 계산, 감열지 영수증 이미지 저장, 카카오톡 공유를 무료로 이용하세요." />
+  <meta name="keywords" content="N빵 계산기, 여행 정산, 더치페이 계산기, 모임 정산, 최소 송금, 해외여행 정산, 환율 정산, 회비 정산, 영수증 만들기" />
+  <meta name="robots" content="index, follow" />
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="딱깔끔 N빵 - 로그인 없는 초간단 모임·여행 정산기" />
+  <meta property="og:description" content="앱 설치·회원가입 없이 링크 하나로 끝내는 N빵 정산기. 해외여행 환율 자동 환산, 최소 송금 계산, 감열지 영수증 PNG 저장까지 무료!" />
+  <meta property="og:locale" content="ko_KR" />
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "딱깔끔 N빵",
+      "alternateName": "로그인 없는 초간단 모임·여행 정산기",
+      "description": "앱 설치나 회원가입 없이 링크 하나로 끝내는 모임·여행 N빵 정산기. 해외여행 다중 통화 환율 계산, 최소 송금 횟수 자동 계산, 감열지 영수증 이미지 저장, 카카오톡 공유를 무료로 제공합니다.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "inLanguage": "ko",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    }
+  </script>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Pretendard Web Font CDN -->
@@ -255,322 +283,94 @@
       </div>
 
       <!-- ============================================================
-           SECTION 1: 모임 정보 & 참석자 · 계좌 관리
+           SECTION 4.5: 사용법 안내 & 자주 묻는 질문 (SEO & AdSense)
            ============================================================ -->
-      <section class="card-box p-5">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">1</span>
-            <h2 class="text-[15.5px] font-bold text-main">모임 정보 & 참석자</h2>
-          </div>
-          <span id="participantCountBadge" class="text-[11px] font-bold text-primary bg-primary-light px-2.5 py-1 rounded-full">0명</span>
+      <section class="card-box p-5" aria-label="딱깔끔 N빵 사용법 및 자주 묻는 질문">
+        <div class="flex items-center gap-2 mb-3.5">
+          <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">?</span>
+          <h2 class="text-[15.5px] font-bold text-main">딱깔끔 N빵 사용법 & 자주 묻는 질문</h2>
         </div>
 
-        <!-- Event Title & Date -->
-        <div class="grid grid-cols-12 gap-2 mb-4">
-          <div class="col-span-7">
-            <label for="eventTitleInput" class="block text-[11px] font-semibold text-sub mb-1">모임 이름</label>
-            <input type="text" id="eventTitleInput" placeholder="예: 오사카 2박 3일 여행" maxlength="32" class="input-field w-full px-3 py-2.5 text-[13px] font-semibold">
-          </div>
-          <div class="col-span-5">
-            <label for="eventDateInput" class="block text-[11px] font-semibold text-sub mb-1">날짜</label>
-            <input type="date" id="eventDateInput" class="input-field w-full px-2.5 py-2.5 text-[12px] font-medium">
-          </div>
+        <!-- 3-Step Usage Guide -->
+        <div class="p-3.5 rounded-2xl bg-surface-sub border border-base mb-4 space-y-2.5">
+          <p class="text-xs font-extrabold text-primary">3단계 초간단 정산 가이드</p>
+          <ol class="space-y-2 text-[12px] text-sub leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+              <span><strong class="text-main">참석자 및 계좌 등록:</strong> 모임 이름과 참석자를 추가하세요. 이름을 탭해 정산받을 계좌번호를 등록해 두면 송금 안내 시 원터치 복사가 가능합니다.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+              <span><strong class="text-main">지출 내역 입력 (해외 통화 지원):</strong> 결제한 사람과 금액, 카테고리, 분배 방식(1/N 균등 또는 직접 입력)을 선택해 등록하세요. 엔화·달러 등 외화도 설정된 환율로 자동 원화 환산됩니다.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+              <span><strong class="text-main">최소 송금 확인 및 카톡·영수증 공유:</strong> 자동 계산된 최소 송금 내역을 확인하고, 감열지 영수증(PNG) 저장이나 카카오톡 텍스트 복사, 공유 링크로 친구들에게 바로 전달하세요.</span>
+            </li>
+          </ol>
         </div>
 
-        <!-- Add Participant Form -->
-        <div class="mb-3">
-          <label class="block text-[11px] font-semibold text-sub mb-1">참석자 추가 <span class="font-normal text-muted">(계좌는 선택)</span></label>
-          <div class="flex gap-2 mb-2">
-            <input type="text" id="newParticipantName" placeholder="이름 (예: 민수)" maxlength="10" class="input-field w-[38%] px-3 py-2.5 text-[13px] font-semibold">
-            <input type="text" id="newParticipantAccount" placeholder="은행 계좌번호 (선택)" maxlength="40" class="input-field flex-1 min-w-0 px-3 py-2.5 text-[12.5px]">
-            <button type="button" id="btnAddParticipant" class="px-3.5 py-2.5 rounded-[14px] bg-primary text-white text-[13px] font-bold active:scale-95 transition shrink-0">
-              추가
-            </button>
-          </div>
-        </div>
-
-        <!-- Participant Pill Chips -->
-        <div id="participantChipsContainer" class="flex flex-wrap gap-2 mt-2"></div>
-
-        <!-- Inline Account Editor -->
-        <div id="accountEditorBox" class="hidden mt-3 p-3.5 rounded-2xl bg-primary-light border border-primary/25">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-primary"><span id="editingParticipantName"></span>님의 정산 계좌</span>
-            <button type="button" id="btnCloseAccountEditor" class="text-[11px] font-medium text-sub hover:text-main">닫기</button>
-          </div>
-          <div class="flex gap-2">
-            <input type="text" id="editAccountInput" placeholder="예: 카카오뱅크 3333-01-2345678" class="input-field flex-1 min-w-0 px-3 py-2 text-xs !bg-surface border border-primary/30">
-            <button type="button" id="btnSaveAccount" class="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold active:scale-95 transition shrink-0">저장</button>
-          </div>
-        </div>
-
-        <p id="participantHint" class="hidden text-[11px] text-muted mt-2.5 flex items-center gap-1">
-          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          이름을 탭하면 정산받을 계좌번호를 등록·수정할 수 있어요.
-        </p>
-      </section>
-
-      <!-- ============================================================
-           SECTION 2: 지출 내역 입력(다중통화·카테고리·분배방식) & 목록
-           ============================================================ -->
-      <section class="card-box p-5">
-        <div class="flex items-center justify-between mb-3.5">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">2</span>
-            <h2 class="text-[15.5px] font-bold text-main">지출 내역</h2>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button type="button" id="btnToggleRatePanel" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-input text-sub hover:text-main flex items-center gap-1 active:scale-95 transition">
-              <span>💱</span> 환율 설정
-            </button>
-            <span id="expenseCountBadge" class="text-[11px] font-bold text-sub bg-input px-2.5 py-1 rounded-full">0건</span>
-          </div>
-        </div>
-
-        <!-- Collapsible Exchange Rate Settings Panel -->
-        <div id="exchangeRatePanel" class="hidden mb-4 p-3.5 rounded-2xl bg-surface-sub border border-base">
-          <div class="flex items-center justify-between mb-2.5">
-            <span class="text-xs font-bold text-main">해외여행 적용 환율 (원화 환산 기준)</span>
-            <button type="button" id="btnResetRates" class="text-[11px] font-semibold text-primary hover:underline">기본값 복원</button>
-          </div>
-          <div id="exchangeRateInputs" class="grid grid-cols-2 gap-2">
-            <!-- Populated dynamically -->
-          </div>
-          <p class="text-[10.5px] text-muted mt-2">외화 지출 입력 시 위 환율로 자동 원화(KRW) 통합 정산됩니다.</p>
-        </div>
-
-        <!-- Edit Mode Indicator Banner -->
-        <div id="editModeBanner" class="hidden mb-3 px-3.5 py-2.5 rounded-2xl bg-primary-light border border-primary/30 flex items-center justify-between">
-          <span class="text-xs font-bold text-primary">지출 내역을 수정하고 있어요</span>
-          <button type="button" id="btnCancelEdit" class="text-xs font-bold text-sub hover:text-main px-2 py-0.5 rounded-lg bg-surface">취소</button>
-        </div>
-
-        <!-- Expense Input Form -->
-        <div class="space-y-3.5 pb-4 border-b border-base">
-          <!-- Title & Currency -->
-          <div class="grid grid-cols-12 gap-2">
-            <div class="col-span-7">
-              <label for="expenseTitle" class="block text-[11px] font-semibold text-sub mb-1">지출 항목</label>
-              <input type="text" id="expenseTitle" placeholder="예: 이치란 라멘, 숙박비" maxlength="30" class="input-field w-full px-3 py-2.5 text-[13px] font-medium">
-            </div>
-            <div class="col-span-5">
-              <label for="expenseCurrency" class="block text-[11px] font-semibold text-sub mb-1">통화</label>
-              <select id="expenseCurrency" class="input-field w-full px-2.5 py-2.5 text-[12.5px] font-bold">
-                <option value="KRW">🇰🇷 KRW (원)</option>
-                <option value="JPY">🇯🇵 JPY (엔)</option>
-                <option value="USD">🇺🇸 USD (달러)</option>
-                <option value="EUR">🇪🇺 EUR (유로)</option>
-                <option value="TWD">🇹🇼 TWD (대만달러)</option>
-                <option value="VND">🇻🇳 VND (동)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Amount & Payer -->
-          <div class="grid grid-cols-12 gap-2">
-            <div class="col-span-7">
-              <label for="expenseAmount" class="block text-[11px] font-semibold text-sub mb-1">금액</label>
-              <div class="relative">
-                <input type="text" inputmode="decimal" id="expenseAmount" placeholder="0" class="input-field w-full pl-3 pr-9 py-2.5 text-[14px] font-extrabold text-right">
-                <span id="amountCurrencySymbol" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">원</span>
-              </div>
-            </div>
-            <div class="col-span-5">
-              <label for="expensePayer" class="block text-[11px] font-semibold text-sub mb-1">결제한 사람</label>
-              <select id="expensePayer" class="input-field w-full px-2.5 py-2.5 text-[13px] font-semibold">
-                <option value="">참석자 추가</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Live Foreign Currency Conversion Preview -->
-          <div id="fxPreviewBar" class="hidden px-3 py-2 rounded-xl bg-primary-light/70 flex items-center justify-between text-[11.5px]">
-            <span id="fxRateInfo" class="text-sub font-medium">100엔 = 920원</span>
-            <span class="font-extrabold text-primary">≈ <span id="fxConvertedKRW">0원</span></span>
-          </div>
-
-          <!-- Category Selector Pills -->
-          <div>
-            <label class="block text-[11px] font-semibold text-sub mb-1.5">카테고리</label>
-            <div id="categoryPillsContainer" class="flex flex-wrap gap-1.5">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-
-          <!-- Split Mode Tabs (1/N Equal vs Custom Exact Amounts) -->
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <div class="inline-flex p-0.5 rounded-xl bg-input text-[11.5px] font-bold">
-                <button type="button" id="tabSplitEqual" class="px-3 py-1.5 rounded-[10px] bg-surface text-main shadow-sm transition-all">1/N 균등 정산</button>
-                <button type="button" id="tabSplitCustom" class="px-3 py-1.5 rounded-[10px] text-muted hover:text-main transition-all">직접 금액 입력</button>
-              </div>
-              <button type="button" id="btnToggleSelectAll" class="text-[11.5px] font-bold text-primary hover:underline">전체 해제</button>
-            </div>
-
-            <!-- Mode A: Equal Split -->
-            <div id="equalSplitArea">
-              <div id="sharedByContainer" class="flex flex-wrap gap-1.5"></div>
-            </div>
-
-            <!-- Mode B: Custom Exact Split -->
-            <div id="customSplitArea" class="hidden space-y-2">
-              <div id="customSplitInputs" class="space-y-1.5"></div>
-              <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-surface-sub border border-base text-[11.5px]">
-                <span id="customSplitStatus" class="font-bold text-sub">합계: 0원</span>
-                <button type="button" id="btnDistributeRemainder" class="text-primary font-bold hover:underline">나머지 1/N 채우기</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Submit / Update Expense Button -->
-          <button type="button" id="btnAddExpense" class="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold active:scale-[0.99] transition-all shadow-sm">
-            + 지출 내역 추가하기
-          </button>
-        </div>
-
-        <!-- Expense List -->
-        <div id="expenseListContainer" class="mt-4 space-y-2.5"></div>
-      </section>
-
-      <!-- ============================================================
-           SECTION 2.5: 카테고리별 지출 분석 요약 (Stacked Bar)
-           ============================================================ -->
-      <section id="analyticsSection" class="hidden card-box p-5">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-[14.5px] font-bold text-main">지출 요약 & 카테고리 분석</h2>
-          <span id="avgSpendBadge" class="text-[11.5px] font-bold text-primary bg-primary-light px-2.5 py-1 rounded-full">1인 평균 0원</span>
-        </div>
-
-        <div class="flex items-baseline justify-between mb-3">
-          <span class="text-xs font-medium text-sub">총 지출 금액 (원화 통합)</span>
-          <span id="totalSpendDisplay" class="text-xl font-extrabold text-main tracking-tight">0원</span>
-        </div>
-
-        <!-- Horizontal Stacked Bar -->
-        <div id="categoryStackedBar" class="w-full h-3.5 rounded-full overflow-hidden flex bg-input mb-3.5"></div>
-
-        <!-- Category Legend Grid -->
-        <div id="categoryLegendContainer" class="grid grid-cols-2 gap-x-3 gap-y-2"></div>
-      </section>
-
-      <!-- ============================================================
-           MONETIZATION AD SLOT #1 (In-Feed 320x100 Display Banner)
-           ============================================================ -->
-      <div class="ad-banner-wrapper">
-        <!--
-          [수익화 배너 슬롯 #1 - 인피드 반응형 / 320x100]
-          실제 배포 시 아래 플레이스홀더 div를 삭제하고 Google AdSense 또는 Kakao AdFit 스크립트를 삽입하세요.
-
-          예시 (Google AdSense):
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-               data-ad-slot="XXXXXXXXXX"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        -->
-        <div class="ad-slot h-[100px] flex flex-col items-center justify-center text-center px-4">
-          <span class="text-[10px] font-extrabold tracking-wider uppercase px-2 py-0.5 rounded-md bg-input text-muted mb-1">AD · 320×100</span>
-          <p class="text-xs font-semibold text-sub">수익화 디스플레이 배너 영역</p>
-          <p class="text-[10.5px] text-muted mt-0.5">Google AdSense / Kakao AdFit 코드 삽입 위치</p>
-        </div>
-      </div>
-
-      <!-- ============================================================
-           SECTION 3: 최소 송금 정산 결과 & 송금 완료 체크리스트
-           ============================================================ -->
-      <section class="card-box p-5">
-        <div class="flex items-center justify-between gap-2 mb-3.5">
-          <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">3</span>
-            <h2 class="text-[15.5px] font-bold text-main">최소 송금 정산</h2>
-          </div>
-          <!-- Rounding Unit Selector (1 / 10 / 100 KRW) -->
-          <div class="inline-flex bg-input p-0.5 rounded-xl text-[11px] font-bold">
-            <button type="button" data-unit="1" class="unit-btn px-2 py-1 rounded-lg transition-all">1원</button>
-            <button type="button" data-unit="10" class="unit-btn px-2 py-1 rounded-lg transition-all">10원</button>
-            <button type="button" data-unit="100" class="unit-btn px-2 py-1 rounded-lg transition-all">100원</button>
-          </div>
-        </div>
-
-        <!-- Transfer Completion Progress Bar -->
-        <div id="transferProgressBox" class="hidden mb-3.5 p-3 rounded-2xl bg-surface-sub border border-base">
-          <div class="flex items-center justify-between text-xs mb-1.5">
-            <span class="font-bold text-sub">송금 완료 현황</span>
-            <span id="transferProgressText" class="font-extrabold text-success">0 / 0 완료</span>
-          </div>
-          <div class="w-full h-2 rounded-full bg-input overflow-hidden">
-            <div id="transferProgressBar" class="h-full bg-success rounded-full transition-all duration-300" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- Transfer Cards List -->
-        <div id="transfersContainer" class="space-y-2.5"></div>
-
-        <!-- Individual Breakdown Accordion -->
-        <div id="breakdownWrapper" class="hidden mt-4 pt-3.5 border-t border-base">
-          <button type="button" id="btnToggleBreakdown" class="w-full flex items-center justify-between text-xs font-bold text-sub hover:text-main py-1">
-            <span>개인별 지출 · 부담 내역 상세 보기</span>
-            <svg id="breakdownArrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div id="breakdownTableContainer" class="hidden mt-3 overflow-x-auto">
-            <table class="w-full text-xs text-left">
-              <thead>
-                <tr class="text-muted border-b border-base">
-                  <th class="pb-2 font-semibold">이름</th>
-                  <th class="pb-2 font-semibold text-right">낸 금액</th>
-                  <th class="pb-2 font-semibold text-right">쓴 금액</th>
-                  <th class="pb-2 font-semibold text-right">차액</th>
-                </tr>
-              </thead>
-              <tbody id="breakdownTableBody" class="divide-y divide-[var(--border)]"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================================================
-           SECTION 4: 영수증 이미지 저장 & 공유 기능
-           ============================================================ -->
-      <section class="card-box p-5">
-        <div class="flex items-center gap-2 mb-2.5">
-          <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">4</span>
-          <h2 class="text-[15.5px] font-bold text-main">영수증 저장 & 공유</h2>
-        </div>
-        <p class="text-[11.5px] text-muted mb-4 leading-relaxed">
-          감성 영수증 이미지로 저장하거나, 서버 저장 없이 링크 하나로 친구들에게 정산 내역을 그대로 공유할 수 있어요.
-        </p>
-
-        <div class="space-y-2.5">
-          <!-- Receipt PNG Button (Primary Highlight) -->
-          <button type="button" id="btnOpenReceipt" class="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl bg-primary text-white text-[13.5px] font-bold active:scale-[0.99] transition-all shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5l-2-1.5L13 21l-2-1.5L9 21l-2-1.5L5 21V5a2 2 0 012-2h10a2 2 0 012 2v16z"></path>
-            </svg>
-            영수증 이미지(PNG) 저장하기
-          </button>
-
-          <div class="grid grid-cols-2 gap-2">
-            <!-- KakaoTalk Text Copy -->
-            <button type="button" id="btnCopyKakao" class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-[#FEE500] text-[#191919] text-[13px] font-bold hover:brightness-95 active:scale-[0.98] transition-all">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.84 5.31 4.62 6.72-.2.74-.73 2.68-.84 3.1-.13.52.19.51.4.37.16-.11 2.57-1.74 3.61-2.45.71.1 1.45.16 2.21.16 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/>
+        <!-- FAQ Accordion -->
+        <div class="space-y-2">
+          <details class="group rounded-2xl bg-surface-sub border border-base overflow-hidden">
+            <summary class="flex items-center justify-between gap-2 px-3.5 py-3 text-[12.5px] font-bold text-main cursor-pointer list-none select-none">
+              <span>Q. 회원가입이나 앱 설치가 필요한가요?</span>
+              <svg class="w-4 h-4 text-muted shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
               </svg>
-              카톡 텍스트 복사
-            </button>
+            </summary>
+            <div class="px-3.5 pb-3.5 pt-0.5 text-[12px] text-sub leading-relaxed border-t border-base/60">
+              아니요, 별도의 앱 설치나 회원가입 없이 모바일·PC 웹 브라우저에서 100% 무료로 바로 이용할 수 있습니다. 입력하신 내용은 내 기기 브라우저에 자동 저장되며 링크 하나로 친구들과 공유할 수 있습니다.
+            </div>
+          </details>
 
-            <!-- Serverless URL Hash Share -->
-            <button type="button" id="btnCopyLink" class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-input text-main border border-base text-[13px] font-bold hover:opacity-90 active:scale-[0.98] transition-all">
-              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+          <details class="group rounded-2xl bg-surface-sub border border-base overflow-hidden">
+            <summary class="flex items-center justify-between gap-2 px-3.5 py-3 text-[12.5px] font-bold text-main cursor-pointer list-none select-none">
+              <span>Q. '최소 송금 알고리즘'이란 무엇인가요?</span>
+              <svg class="w-4 h-4 text-muted shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
               </svg>
-              링크로 공유
-            </button>
-          </div>
+            </summary>
+            <div class="px-3.5 pb-3.5 pt-0.5 text-[12px] text-sub leading-relaxed border-t border-base/60">
+              여러 명이 번갈아 결제한 복잡한 모임·여행 경비를 정산할 때, 서로 주고받아야 하는 전체 이체 횟수를 수학적으로 최소화해 주는 계산 방식입니다. 불필요한 중복 송금 없이 딱 필요한 횟수만 송금하도록 정리해 드립니다.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl bg-surface-sub border border-base overflow-hidden">
+            <summary class="flex items-center justify-between gap-2 px-3.5 py-3 text-[12.5px] font-bold text-main cursor-pointer list-none select-none">
+              <span>Q. 해외여행 중 엔화·달러·유로가 섞여 있어도 정산되나요?</span>
+              <svg class="w-4 h-4 text-muted shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-3.5 pb-3.5 pt-0.5 text-[12px] text-sub leading-relaxed border-t border-base/60">
+              네, 가능합니다! 원화(KRW)는 물론 일본 엔(JPY), 미국 달러(USD), 유로(EUR), 대만 달러(TWD), 베트남 동(VND) 지출을 섞어 입력해도 설정된 환율에 따라 원화로 자동 통합 정산됩니다. 환율 설정 패널에서 실제 결제 환율을 직접 수정할 수도 있습니다.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl bg-surface-sub border border-base overflow-hidden">
+            <summary class="flex items-center justify-between gap-2 px-3.5 py-3 text-[12.5px] font-bold text-main cursor-pointer list-none select-none">
+              <span>Q. 입력한 내역이나 계좌번호는 서버에 저장되나요?</span>
+              <svg class="w-4 h-4 text-muted shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-3.5 pb-3.5 pt-0.5 text-[12px] text-sub leading-relaxed border-t border-base/60">
+              절대 외부 서버에 저장되지 않습니다. 딱깔끔 N빵은 개인정보 보호를 최우선으로 하는 무서버(Serverless) 방식이며, 모든 데이터는 사용자 기기의 브라우저와 공유 링크(URL 해시) 안에만 안전하게 보관됩니다.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl bg-surface-sub border border-base overflow-hidden">
+            <summary class="flex items-center justify-between gap-2 px-3.5 py-3 text-[12.5px] font-bold text-main cursor-pointer list-none select-none">
+              <span>Q. 10원, 100원 단위로 깔끔하게 떨어지게 할 수 있나요?</span>
+              <svg class="w-4 h-4 text-muted shrink-0 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </summary>
+            <div class="px-3.5 pb-3.5 pt-0.5 text-[12px] text-sub leading-relaxed border-t border-base/60">
+              네, '최소 송금 정산' 카드 우측 상단의 반올림 옵션에서 <strong>1원 / 10원 / 100원</strong> 단위를 자유롭게 선택할 수 있어 잔돈 없이 깔끔하게 송금할 수 있습니다.
+            </div>
+          </details>
         </div>
       </section>
 
@@ -595,7 +395,10 @@
 
       <!-- Footer & Ad Slot Preview Toggle -->
       <footer class="text-center pt-2 pb-4 space-y-2">
-        <p class="text-[11px] text-muted">딱깔끔 N빵 · 브라우저 로컬 자동 저장 & 무서버 정산</p>
+        <p class="text-[11px] font-semibold text-sub">© 2026 딱깔끔 N빵. All rights reserved.</p>
+        <p class="text-[10.5px] text-muted leading-relaxed px-2">
+          본 서비스는 브라우저 로컬 저장 및 URL 해시 기반의 무서버 정산 도구이며, 환율 및 반올림 오차에 대한 최종 확인 책임은 사용자에게 있습니다.
+        </p>
         <button type="button" id="btnToggleAdSlots" class="text-[11px] font-semibold text-muted hover:text-sub underline underline-offset-2">
           광고 영역 숨기기 (미리보기용)
         </button>
