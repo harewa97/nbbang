@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>딱깔끔 N빵 - 로그인 없는 초간단 모임·여행 정산기</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Pretendard Web Font CDN -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', '"Helvetica Neue"', '"Segoe UI"', '"Apple SD Gothic Neo"', '"Noto Sans KR"', '"Malgun Gothic"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ============================================================
+       Design Tokens & Theme Variables (Light / Dark Mode)
+       ============================================================ */
+    :root {
+      --outer-bg: #E8ECEF;
+      --bg: #F2F4F6;
+      --card: #FFFFFF;
+      --card-elevated: #F9FAFB;
+      --input-bg: #F2F4F6;
+      --text: #191F28;
+      --text-sub: #4E5968;
+      --text-muted: #8B95A1;
+      --border: #E5E8EB;
+      --primary: #3182F6;
+      --primary-dark: #1B64DA;
+      --primary-light: #E8F3FF;
+      --danger: #F04452;
+      --danger-light: #FFEBEE;
+      --success: #00B86B;
+      --success-light: #E6F9F0;
+      --warning: #F59E0B;
+      --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+      --shadow-shell: 0 12px 40px rgba(0, 0, 0, 0.08);
+      --shadow-float: 0 10px 28px rgba(0, 0, 0, 0.16);
+      --ad-bg: #F8FAFC;
+      --ad-border: #CBD5E1;
+    }
+
+    html.dark {
+      --outer-bg: #0B0D11;
+      --bg: #12151C;
+      --card: #1B1F29;
+      --card-elevated: #232836;
+      --input-bg: #252B39;
+      --text: #F2F4F7;
+      --text-sub: #B0B8C5;
+      --text-muted: #7C8594;
+      --border: #2C3344;
+      --primary: #4B94FF;
+      --primary-dark: #3182F6;
+      --primary-light: rgba(75, 148, 255, 0.16);
+      --danger: #FF5C6C;
+      --danger-light: rgba(255, 92, 108, 0.16);
+      --success: #1AD184;
+      --success-light: rgba(26, 209, 132, 0.15);
+      --warning: #FBBF24;
+      --shadow-card: 0 2px 14px rgba(0, 0, 0, 0.28);
+      --shadow-shell: 0 16px 48px rgba(0, 0, 0, 0.55);
+      --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.5);
+      --ad-bg: #171B24;
+      --ad-border: #333C4F;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--outer-bg);
+      color: var(--text);
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Mobile-First Centered App Shell (480px max on desktop) */
+    .app-shell {
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background-color: var(--bg);
+      box-shadow: var(--shadow-shell);
+      position: relative;
+      transition: background-color 0.25s ease;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        background-color: var(--bg);
+      }
+      .app-shell {
+        box-shadow: none;
+      }
+    }
+
+    /* Semantic Utility Classes powered by CSS Variables */
+    .bg-surface { background-color: var(--card); }
+    .bg-surface-sub { background-color: var(--card-elevated); }
+    .bg-input { background-color: var(--input-bg); }
+    .bg-primary { background-color: var(--primary); }
+    .bg-primary-light { background-color: var(--primary-light); }
+    .bg-danger { background-color: var(--danger); }
+    .bg-danger-light { background-color: var(--danger-light); }
+    .bg-success { background-color: var(--success); }
+    .bg-success-light { background-color: var(--success-light); }
+
+    .text-main { color: var(--text); }
+    .text-sub { color: var(--text-sub); }
+    .text-muted { color: var(--text-muted); }
+    .text-primary { color: var(--primary); }
+    .text-danger { color: var(--danger); }
+    .text-success { color: var(--success); }
+
+    .border-base { border-color: var(--border); }
+    .border-primary { border-color: var(--primary); }
+
+    .card-box {
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      border-radius: 24px;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .input-field {
+      background-color: var(--input-bg);
+      color: var(--text);
+      border: 1.5px solid transparent;
+      border-radius: 14px;
+      transition: all 0.18s ease;
+    }
+    .input-field::placeholder {
+      color: var(--text-muted);
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: var(--card);
+    }
+
+    /* Native date input dark mode icon fix */
+    html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.85);
+    }
+
+    /* Ad Banner Slot Placeholder */
+    .ad-slot {
+      background-color: var(--ad-bg);
+      border: 1.5px dashed var(--ad-border);
+      border-radius: 18px;
+      transition: all 0.2s ease;
+    }
+
+    /* Subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 9999px;
+    }
+
+    /* Animations */
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast-enter {
+      animation: slideUpFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-pop {
+      animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell flex flex-col">
+
+    <!-- ============================================================
+         STICKY TOP HEADER
+         ============================================================ -->
+    <header class="sticky top-0 z-30 border-b border-base backdrop-blur-md" style="background-color: color-mix(in srgb, var(--card) 88%, transparent);">
+      <div class="px-4 h-14 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white font-extrabold text-sm shadow-sm shrink-0">
+            N
+          </div>
+          <div class="min-w-0">
+            <h1 class="text-[16px] font-extrabold tracking-tight text-main leading-none truncate">딱깔끔 N빵</h1>
+            <p class="text-[10.5px] text-muted mt-0.5 truncate">로그인 없는 모임·여행 정산</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="btnLoadSample" class="px-2.5 py-1.5 rounded-xl text-[11.5px] font-bold bg-primary-light text-primary hover:opacity-90 active:scale-95 transition-all">
+            샘플
+          </button>
+          <button type="button" id="btnResetTrigger" class="px-2.5 py-1.5 rounded-xl text-[11.5px] font-semibold bg-input text-sub hover:opacity-85 active:scale-95 transition-all">
+            초기화
+          </button>
+          <!-- Light / Dark Theme Toggle -->
+          <button type="button" id="btnThemeToggle" class="w-8 h-8 rounded-xl bg-input text-main flex items-center justify-center hover:opacity-85 active:scale-95 transition-all" aria-label="다크모드 전환" title="다크모드 전환">
+            <!-- Sun Icon (shown in dark mode) -->
+            <svg id="iconSun" class="w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"></path>
+            </svg>
+            <!-- Moon Icon (shown in light mode) -->
+            <svg id="iconMoon" class="w-4 h-4 text-sub" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         ============================================================ -->
+    <main class="flex-1 px-4 pt-4 pb-8 space-y-4">
+
+      <!-- Inline Reset Confirmation Banner (Never uses confirm()) -->
+      <div id="resetConfirmBar" class="hidden card-box p-4 border-red-400/50 flex items-center justify-between gap-3">
+        <div class="text-xs">
+          <p class="font-bold text-main text-[13px]">모든 정산 내역을 초기화할까요?</p>
+          <p class="text-muted mt-0.5">저장된 참석자와 지출 데이터가 삭제됩니다.</p>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button type="button" id="btnResetCancel" class="px-3 py-2 rounded-xl text-xs font-semibold bg-input text-sub active:scale-95 transition">취소</button>
+          <button type="button" id="btnResetConfirm" class="px-3 py-2 rounded-xl text-xs font-bold bg-danger text-white active:scale-95 transition">초기화</button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           SECTION 1: 모임 정보 & 참석자 · 계좌 관리
+           ============================================================ -->
+      <section class="card-box p-5">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">1</span>
+            <h2 class="text-[15.5px] font-bold text-main">모임 정보 & 참석자</h2>
+          </div>
+          <span id="participantCountBadge" class="text-[11px] font-bold text-primary bg-primary-light px-2.5 py-1 rounded-full">0명</span>
+        </div>
+
+        <!-- Event Title & Date -->
+        <div class="grid grid-cols-12 gap-2 mb-4">
+          <div class="col-span-7">
+            <label for="eventTitleInput" class="block text-[11px] font-semibold text-sub mb-1">모임 이름</label>
+            <input type="text" id="eventTitleInput" placeholder="예: 오사카 2박 3일 여행" maxlength="32" class="input-field w-full px-3 py-2.5 text-[13px] font-semibold">
+          </div>
+          <div class="col-span-5">
+            <label for="eventDateInput" class="block text-[11px] font-semibold text-sub mb-1">날짜</label>
+            <input type="date" id="eventDateInput" class="input-field w-full px-2.5 py-2.5 text-[12px] font-medium">
+          </div>
+        </div>
+
+        <!-- Add Participant Form -->
+        <div class="mb-3">
+          <label class="block text-[11px] font-semibold text-sub mb-1">참석자 추가 <span class="font-normal text-muted">(계좌는 선택)</span></label>
+          <div class="flex gap-2 mb-2">
+            <input type="text" id="newParticipantName" placeholder="이름 (예: 민수)" maxlength="10" class="input-field w-[38%] px-3 py-2.5 text-[13px] font-semibold">
+            <input type="text" id="newParticipantAccount" placeholder="은행 계좌번호 (선택)" maxlength="40" class="input-field flex-1 min-w-0 px-3 py-2.5 text-[12.5px]">
+            <button type="button" id="btnAddParticipant" class="px-3.5 py-2.5 rounded-[14px] bg-primary text-white text-[13px] font-bold active:scale-95 transition shrink-0">
+              추가
+            </button>
+          </div>
+        </div>
+
+        <!-- Participant Pill Chips -->
+        <div id="participantChipsContainer" class="flex flex-wrap gap-2 mt-2"></div>
+
+        <!-- Inline Account Editor -->
+        <div id="accountEditorBox" class="hidden mt-3 p-3.5 rounded-2xl bg-primary-light border border-primary/25">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-primary"><span id="editingParticipantName"></span>님의 정산 계좌</span>
+            <button type="button" id="btnCloseAccountEditor" class="text-[11px] font-medium text-sub hover:text-main">닫기</button>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" id="editAccountInput" placeholder="예: 카카오뱅크 3333-01-2345678" class="input-field flex-1 min-w-0 px-3 py-2 text-xs !bg-surface border border-primary/30">
+            <button type="button" id="btnSaveAccount" class="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold active:scale-95 transition shrink-0">저장</button>
+          </div>
+        </div>
+
+        <p id="participantHint" class="hidden text-[11px] text-muted mt-2.5 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          이름을 탭하면 정산받을 계좌번호를 등록·수정할 수 있어요.
+        </p>
+      </section>
+
+      <!-- ============================================================
+           SECTION 2: 지출 내역 입력(다중통화·카테고리·분배방식) & 목록
+           ============================================================ -->
+      <section class="card-box p-5">
+        <div class="flex items-center justify-between mb-3.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">2</span>
+            <h2 class="text-[15.5px] font-bold text-main">지출 내역</h2>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btnToggleRatePanel" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-input text-sub hover:text-main flex items-center gap-1 active:scale-95 transition">
+              <span>💱</span> 환율 설정
+            </button>
+            <span id="expenseCountBadge" class="text-[11px] font-bold text-sub bg-input px-2.5 py-1 rounded-full">0건</span>
+          </div>
+        </div>
+
+        <!-- Collapsible Exchange Rate Settings Panel -->
+        <div id="exchangeRatePanel" class="hidden mb-4 p-3.5 rounded-2xl bg-surface-sub border border-base">
+          <div class="flex items-center justify-between mb-2.5">
+            <span class="text-xs font-bold text-main">해외여행 적용 환율 (원화 환산 기준)</span>
+            <button type="button" id="btnResetRates" class="text-[11px] font-semibold text-primary hover:underline">기본값 복원</button>
+          </div>
+          <div id="exchangeRateInputs" class="grid grid-cols-2 gap-2">
+            <!-- Populated dynamically -->
+          </div>
+          <p class="text-[10.5px] text-muted mt-2">외화 지출 입력 시 위 환율로 자동 원화(KRW) 통합 정산됩니다.</p>
+        </div>
+
+        <!-- Edit Mode Indicator Banner -->
+        <div id="editModeBanner" class="hidden mb-3 px-3.5 py-2.5 rounded-2xl bg-primary-light border border-primary/30 flex items-center justify-between">
+          <span class="text-xs font-bold text-primary">지출 내역을 수정하고 있어요</span>
+          <button type="button" id="btnCancelEdit" class="text-xs font-bold text-sub hover:text-main px-2 py-0.5 rounded-lg bg-surface">취소</button>
+        </div>
+
+        <!-- Expense Input Form -->
+        <div class="space-y-3.5 pb-4 border-b border-base">
+          <!-- Title & Currency -->
+          <div class="grid grid-cols-12 gap-2">
+            <div class="col-span-7">
+              <label for="expenseTitle" class="block text-[11px] font-semibold text-sub mb-1">지출 항목</label>
+              <input type="text" id="expenseTitle" placeholder="예: 이치란 라멘, 숙박비" maxlength="30" class="input-field w-full px-3 py-2.5 text-[13px] font-medium">
+            </div>
+            <div class="col-span-5">
+              <label for="expenseCurrency" class="block text-[11px] font-semibold text-sub mb-1">통화</label>
+              <select id="expenseCurrency" class="input-field w-full px-2.5 py-2.5 text-[12.5px] font-bold">
+                <option value="KRW">🇰🇷 KRW (원)</option>
+                <option value="JPY">🇯🇵 JPY (엔)</option>
+                <option value="USD">🇺🇸 USD (달러)</option>
+                <option value="EUR">🇪🇺 EUR (유로)</option>
+                <option value="TWD">🇹🇼 TWD (대만달러)</option>
+                <option value="VND">🇻🇳 VND (동)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Amount & Payer -->
+          <div class="grid grid-cols-12 gap-2">
+            <div class="col-span-7">
+              <label for="expenseAmount" class="block text-[11px] font-semibold text-sub mb-1">금액</label>
+              <div class="relative">
+                <input type="text" inputmode="decimal" id="expenseAmount" placeholder="0" class="input-field w-full pl-3 pr-9 py-2.5 text-[14px] font-extrabold text-right">
+                <span id="amountCurrencySymbol" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted">원</span>
+              </div>
+            </div>
+            <div class="col-span-5">
+              <label for="expensePayer" class="block text-[11px] font-semibold text-sub mb-1">결제한 사람</label>
+              <select id="expensePayer" class="input-field w-full px-2.5 py-2.5 text-[13px] font-semibold">
+                <option value="">참석자 추가</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Live Foreign Currency Conversion Preview -->
+          <div id="fxPreviewBar" class="hidden px-3 py-2 rounded-xl bg-primary-light/70 flex items-center justify-between text-[11.5px]">
+            <span id="fxRateInfo" class="text-sub font-medium">100엔 = 920원</span>
+            <span class="font-extrabold text-primary">≈ <span id="fxConvertedKRW">0원</span></span>
+          </div>
+
+          <!-- Category Selector Pills -->
+          <div>
+            <label class="block text-[11px] font-semibold text-sub mb-1.5">카테고리</label>
+            <div id="categoryPillsContainer" class="flex flex-wrap gap-1.5">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Split Mode Tabs (1/N Equal vs Custom Exact Amounts) -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="inline-flex p-0.5 rounded-xl bg-input text-[11.5px] font-bold">
+                <button type="button" id="tabSplitEqual" class="px-3 py-1.5 rounded-[10px] bg-surface text-main shadow-sm transition-all">1/N 균등 정산</button>
+                <button type="button" id="tabSplitCustom" class="px-3 py-1.5 rounded-[10px] text-muted hover:text-main transition-all">직접 금액 입력</button>
+              </div>
+              <button type="button" id="btnToggleSelectAll" class="text-[11.5px] font-bold text-primary hover:underline">전체 해제</button>
+            </div>
+
+            <!-- Mode A: Equal Split -->
+            <div id="equalSplitArea">
+              <div id="sharedByContainer" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <!-- Mode B: Custom Exact Split -->
+            <div id="customSplitArea" class="hidden space-y-2">
+              <div id="customSplitInputs" class="space-y-1.5"></div>
+              <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-surface-sub border border-base text-[11.5px]">
+                <span id="customSplitStatus" class="font-bold text-sub">합계: 0원</span>
+                <button type="button" id="btnDistributeRemainder" class="text-primary font-bold hover:underline">나머지 1/N 채우기</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit / Update Expense Button -->
+          <button type="button" id="btnAddExpense" class="w-full py-3.5 rounded-2xl bg-primary text-white text-[14px] font-bold active:scale-[0.99] transition-all shadow-sm">
+            + 지출 내역 추가하기
+          </button>
+        </div>
+
+        <!-- Expense List -->
+        <div id="expenseListContainer" class="mt-4 space-y-2.5"></div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 2.5: 카테고리별 지출 분석 요약 (Stacked Bar)
+           ============================================================ -->
+      <section id="analyticsSection" class="hidden card-box p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-[14.5px] font-bold text-main">지출 요약 & 카테고리 분석</h2>
+          <span id="avgSpendBadge" class="text-[11.5px] font-bold text-primary bg-primary-light px-2.5 py-1 rounded-full">1인 평균 0원</span>
+        </div>
+
+        <div class="flex items-baseline justify-between mb-3">
+          <span class="text-xs font-medium text-sub">총 지출 금액 (원화 통합)</span>
+          <span id="totalSpendDisplay" class="text-xl font-extrabold text-main tracking-tight">0원</span>
+        </div>
+
+        <!-- Horizontal Stacked Bar -->
+        <div id="categoryStackedBar" class="w-full h-3.5 rounded-full overflow-hidden flex bg-input mb-3.5"></div>
+
+        <!-- Category Legend Grid -->
+        <div id="categoryLegendContainer" class="grid grid-cols-2 gap-x-3 gap-y-2"></div>
+      </section>
+
+      <!-- ============================================================
+           MONETIZATION AD SLOT #1 (In-Feed 320x100 Display Banner)
+           ============================================================ -->
+      <div class="ad-banner-wrapper">
+        <!--
+          [수익화 배너 슬롯 #1 - 인피드 반응형 / 320x100]
+          실제 배포 시 아래 플레이스홀더 div를 삭제하고 Google AdSense 또는 Kakao AdFit 스크립트를 삽입하세요.
+
+          예시 (Google AdSense):
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+               data-ad-slot="XXXXXXXXXX"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+        <div class="ad-slot h-[100px] flex flex-col items-center justify-center text-center px-4">
+          <span class="text-[10px] font-extrabold tracking-wider uppercase px-2 py-0.5 rounded-md bg-input text-muted mb-1">AD · 320×100</span>
+          <p class="text-xs font-semibold text-sub">수익화 디스플레이 배너 영역</p>
+          <p class="text-[10.5px] text-muted mt-0.5">Google AdSense / Kakao AdFit 코드 삽입 위치</p>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           SECTION 3: 최소 송금 정산 결과 & 송금 완료 체크리스트
+           ============================================================ -->
+      <section class="card-box p-5">
+        <div class="flex items-center justify-between gap-2 mb-3.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">3</span>
+            <h2 class="text-[15.5px] font-bold text-main">최소 송금 정산</h2>
+          </div>
+          <!-- Rounding Unit Selector (1 / 10 / 100 KRW) -->
+          <div class="inline-flex bg-input p-0.5 rounded-xl text-[11px] font-bold">
+            <button type="button" data-unit="1" class="unit-btn px-2 py-1 rounded-lg transition-all">1원</button>
+            <button type="button" data-unit="10" class="unit-btn px-2 py-1 rounded-lg transition-all">10원</button>
+            <button type="button" data-unit="100" class="unit-btn px-2 py-1 rounded-lg transition-all">100원</button>
+          </div>
+        </div>
+
+        <!-- Transfer Completion Progress Bar -->
+        <div id="transferProgressBox" class="hidden mb-3.5 p-3 rounded-2xl bg-surface-sub border border-base">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-bold text-sub">송금 완료 현황</span>
+            <span id="transferProgressText" class="font-extrabold text-success">0 / 0 완료</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-input overflow-hidden">
+            <div id="transferProgressBar" class="h-full bg-success rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Transfer Cards List -->
+        <div id="transfersContainer" class="space-y-2.5"></div>
+
+        <!-- Individual Breakdown Accordion -->
+        <div id="breakdownWrapper" class="hidden mt-4 pt-3.5 border-t border-base">
+          <button type="button" id="btnToggleBreakdown" class="w-full flex items-center justify-between text-xs font-bold text-sub hover:text-main py-1">
+            <span>개인별 지출 · 부담 내역 상세 보기</span>
+            <svg id="breakdownArrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div id="breakdownTableContainer" class="hidden mt-3 overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead>
+                <tr class="text-muted border-b border-base">
+                  <th class="pb-2 font-semibold">이름</th>
+                  <th class="pb-2 font-semibold text-right">낸 금액</th>
+                  <th class="pb-2 font-semibold text-right">쓴 금액</th>
+                  <th class="pb-2 font-semibold text-right">차액</th>
+                </tr>
+              </thead>
+              <tbody id="breakdownTableBody" class="divide-y divide-[var(--border)]"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: 영수증 이미지 저장 & 공유 기능
+           ============================================================ -->
+      <section class="card-box p-5">
+        <div class="flex items-center gap-2 mb-2.5">
+          <span class="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-extrabold flex items-center justify-center">4</span>
+          <h2 class="text-[15.5px] font-bold text-main">영수증 저장 & 공유</h2>
+        </div>
+        <p class="text-[11.5px] text-muted mb-4 leading-relaxed">
+          감성 영수증 이미지로 저장하거나, 서버 저장 없이 링크 하나로 친구들에게 정산 내역을 그대로 공유할 수 있어요.
+        </p>
+
+        <div class="space-y-2.5">
+          <!-- Receipt PNG Button (Primary Highlight) -->
+          <button type="button" id="btnOpenReceipt" class="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl bg-primary text-white text-[13.5px] font-bold active:scale-[0.99] transition-all shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5l-2-1.5L13 21l-2-1.5L9 21l-2-1.5L5 21V5a2 2 0 012-2h10a2 2 0 012 2v16z"></path>
+            </svg>
+            영수증 이미지(PNG) 저장하기
+          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <!-- KakaoTalk Text Copy -->
+            <button type="button" id="btnCopyKakao" class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-[#FEE500] text-[#191919] text-[13px] font-bold hover:brightness-95 active:scale-[0.98] transition-all">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.84 5.31 4.62 6.72-.2.74-.73 2.68-.84 3.1-.13.52.19.51.4.37.16-.11 2.57-1.74 3.61-2.45.71.1 1.45.16 2.21.16 5.52 0 10-3.58 10-8s-4.48-8-10-8z"/>
+              </svg>
+              카톡 텍스트 복사
+            </button>
+
+            <!-- Serverless URL Hash Share -->
+            <button type="button" id="btnCopyLink" class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-input text-main border border-base text-[13px] font-bold hover:opacity-90 active:scale-[0.98] transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+              </svg>
+              링크로 공유
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           MONETIZATION AD SLOT #2 (Bottom 320x50 Mobile Banner)
+           ============================================================ -->
+      <div class="ad-banner-wrapper pt-1">
+        <!--
+          [수익화 배너 슬롯 #2 - 하단 모바일 배너 / 320x50]
+          예시 (Kakao AdFit):
+          <ins class="kakao_ad_area" style="display:none;"
+               data-ad-unit="DAN-XXXXXXXXXXXXXXXX"
+               data-ad-width="320"
+               data-ad-height="50"></ins>
+          <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+        -->
+        <div class="ad-slot h-[56px] flex items-center justify-center gap-2 px-4">
+          <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-input text-muted">AD</span>
+          <span class="text-[11.5px] font-semibold text-sub">320×50 하단 모바일 배너 영역</span>
+        </div>
+      </div>
+
+      <!-- Footer & Ad Slot Preview Toggle -->
+      <footer class="text-center pt-2 pb-4 space-y-2">
+        <p class="text-[11px] text-muted">딱깔끔 N빵 · 브라우저 로컬 자동 저장 & 무서버 정산</p>
+        <button type="button" id="btnToggleAdSlots" class="text-[11px] font-semibold text-muted hover:text-sub underline underline-offset-2">
+          광고 영역 숨기기 (미리보기용)
+        </button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       THERMAL RECEIPT PNG PREVIEW MODAL
+       ============================================================ -->
+  <div id="receiptModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm">
+    <div class="modal-pop w-full max-w-[390px] max-h-[90vh] flex flex-col rounded-3xl bg-surface border border-base overflow-hidden shadow-2xl">
+      <div class="px-5 py-3.5 border-b border-base flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-bold text-main">감열지 영수증 미리보기</h3>
+          <p class="text-[11px] text-muted">이미지로 저장해 카톡방에 바로 올려보세요</p>
+        </div>
+        <button type="button" id="btnCloseReceiptModal" class="w-8 h-8 rounded-full bg-input text-sub flex items-center justify-center hover:text-main">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4 bg-input/70 flex justify-center">
+        <img id="receiptPreviewImg" alt="정산 영수증 미리보기" class="w-full max-w-[320px] h-auto rounded-lg shadow-lg" />
+      </div>
+
+      <div class="p-4 border-t border-base bg-surface flex gap-2">
+        <button type="button" id="btnCloseReceiptBottom" class="flex-1 py-3 rounded-2xl bg-input text-sub text-xs font-bold active:scale-95 transition">닫기</button>
+        <button type="button" id="btnDownloadReceipt" class="flex-[2] py-3 rounded-2xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          PNG 다운로드
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none w-[90%] max-w-[380px] flex flex-col items-center gap-2"></div>
+
+  <!-- ============================================================
+       APPLICATION JAVASCRIPT
+       ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ============================================================
+      // 1. Constants & Metadata
+      // ============================================================
+      const STORAGE_KEY = 'ttak_nbbang_v2_state';
+      const THEME_KEY = 'ttak_nbbang_theme';
+
+      const CURRENCIES = {
+        KRW: { code: 'KRW', symbol: '원', unit: 1, defaultRate: 1, label: '원' },
+        JPY: { code: 'JPY', symbol: '엔', unit: 100, defaultRate: 920, label: '100엔' },
+        USD: { code: 'USD', symbol: '$', unit: 1, defaultRate: 1380, label: '1달러' },
+        EUR: { code: 'EUR', symbol: '€', unit: 1, defaultRate: 1490, label: '1유로' },
+        TWD: { code: 'TWD', symbol: 'NT$', unit: 1, defaultRate: 43, label: '1대만달러' },
+        VND: { code: 'VND', symbol: '₫', unit: 100, defaultRate: 5.5, label: '100동' }
+      };
+
+      const CATEGORIES = [
+        { id: 'food', label: '식비', emoji: '🍽️', color: '#3182F6' },
+        { id: 'stay', label: '숙박', emoji: '🏨', color: '#8B5CF6' },
+        { id: 'transport', label: '교통', emoji: '🚆', color: '#10B981' },
+        { id: 'drink', label: '술/간식', emoji: '🍻', color: '#F59E0B' },
+        { id: 'activity', label: '액티비티', emoji: '🎡', color: '#EC4899' },
+        { id: 'etc', label: '기타', emoji: '🛍️', color: '#64748B' }
+      ];
+
+      function getDefaultRates() {
+        return { JPY: 920, USD: 1380, EUR: 1490, TWD: 43, VND: 5.5 };
+      }
+
+      function getTodayISO() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      // ============================================================
+      // 2. Application State
+      // ============================================================
+      let state = {
+        title: '',
+        date: getTodayISO(),
+        roundUnit: 10, // 1 | 10 | 100
+        rates: getDefaultRates(),
+        participants: [], // [{ id, name, account }]
+        expenses: [],     // [{ id, title, amount, currency, category, payerId, splitMode: 'equal'|'custom', sharedByIds: [], customAmounts: { [pid]: num } }]
+        completedTransfers: [] // ['fromId->toId']
+      };
+
+      // Transient UI State
+      let editingParticipantId = null;
+      let editingExpenseId = null;
+      let selectedCategory = 'food';
+      let currentSplitMode = 'equal'; // 'equal' | 'custom'
+      let selectedSharedIds = new Set();
+      let customDraftAmounts = {}; // { [pid]: string }
+      let isBreakdownOpen = false;
+      let isAdVisible = true;
+      let lastReceiptDataUrl = '';
+
+      // ============================================================
+      // 3. DOM References
+      // ============================================================
+      const el = {
+        btnThemeToggle: document.getElementById('btnThemeToggle'),
+        iconSun: document.getElementById('iconSun'),
+        iconMoon: document.getElementById('iconMoon'),
+        btnLoadSample: document.getElementById('btnLoadSample'),
+        btnResetTrigger: document.getElementById('btnResetTrigger'),
+        resetConfirmBar: document.getElementById('resetConfirmBar'),
+        btnResetCancel: document.getElementById('btnResetCancel'),
+        btnResetConfirm: document.getElementById('btnResetConfirm'),
+
+        eventTitleInput: document.getElementById('eventTitleInput'),
+        eventDateInput: document.getElementById('eventDateInput'),
+        participantCountBadge: document.getElementById('participantCountBadge'),
+        newParticipantName: document.getElementById('newParticipantName'),
+        newParticipantAccount: document.getElementById('newParticipantAccount'),
+        btnAddParticipant: document.getElementById('btnAddParticipant'),
+        participantChipsContainer: document.getElementById('participantChipsContainer'),
+        participantHint: document.getElementById('participantHint'),
+        accountEditorBox: document.getElementById('accountEditorBox'),
+        editingParticipantName: document.getElementById('editingParticipantName'),
+        editAccountInput: document.getElementById('editAccountInput'),
+        btnSaveAccount: document.getElementById('btnSaveAccount'),
+        btnCloseAccountEditor: document.getElementById('btnCloseAccountEditor'),
+
+        btnToggleRatePanel: document.getElementById('btnToggleRatePanel'),
+        exchangeRatePanel: document.getElementById('exchangeRatePanel'),
+        exchangeRateInputs: document.getElementById('exchangeRateInputs'),
+        btnResetRates: document.getElementById('btnResetRates'),
+        expenseCountBadge: document.getElementById('expenseCountBadge'),
+        editModeBanner: document.getElementById('editModeBanner'),
+        btnCancelEdit: document.getElementById('btnCancelEdit'),
+        expenseTitle: document.getElementById('expenseTitle'),
+        expenseCurrency: document.getElementById('expenseCurrency'),
+        expenseAmount: document.getElementById('expenseAmount'),
+        amountCurrencySymbol: document.getElementById('amountCurrencySymbol'),
+        expensePayer: document.getElementById('expensePayer'),
+        fxPreviewBar: document.getElementById('fxPreviewBar'),
+        fxRateInfo: document.getElementById('fxRateInfo'),
+        fxConvertedKRW: document.getElementById('fxConvertedKRW'),
+        categoryPillsContainer: document.getElementById('categoryPillsContainer'),
+        tabSplitEqual: document.getElementById('tabSplitEqual'),
+        tabSplitCustom: document.getElementById('tabSplitCustom'),
+        btnToggleSelectAll: document.getElementById('btnToggleSelectAll'),
+        equalSplitArea: document.getElementById('equalSplitArea'),
+        sharedByContainer: document.getElementById('sharedByContainer'),
+        customSplitArea: document.getElementById('customSplitArea'),
+        customSplitInputs: document.getElementById('customSplitInputs'),
+        customSplitStatus: document.getElementById('customSplitStatus'),
+        btnDistributeRemainder: document.getElementById('btnDistributeRemainder'),
+        btnAddExpense: document.getElementById('btnAddExpense'),
+        expenseListContainer: document.getElementById('expenseListContainer'),
+
+        analyticsSection: document.getElementById('analyticsSection'),
+        avgSpendBadge: document.getElementById('avgSpendBadge'),
+        totalSpendDisplay: document.getElementById('totalSpendDisplay'),
+        categoryStackedBar: document.getElementById('categoryStackedBar'),
+        categoryLegendContainer: document.getElementById('categoryLegendContainer'),
+
+        transferProgressBox: document.getElementById('transferProgressBox'),
+        transferProgressText: document.getElementById('transferProgressText'),
+        transferProgressBar: document.getElementById('transferProgressBar'),
+        transfersContainer: document.getElementById('transfersContainer'),
+        breakdownWrapper: document.getElementById('breakdownWrapper'),
+        btnToggleBreakdown: document.getElementById('btnToggleBreakdown'),
+        breakdownArrow: document.getElementById('breakdownArrow'),
+        breakdownTableContainer: document.getElementById('breakdownTableContainer'),
+        breakdownTableBody: document.getElementById('breakdownTableBody'),
+
+        btnOpenReceipt: document.getElementById('btnOpenReceipt'),
+        btnCopyKakao: document.getElementById('btnCopyKakao'),
+        btnCopyLink: document.getElementById('btnCopyLink'),
+        btnToggleAdSlots: document.getElementById('btnToggleAdSlots'),
+
+        receiptModal: document.getElementById('receiptModal'),
+        receiptPreviewImg: document.getElementById('receiptPreviewImg'),
+        btnCloseReceiptModal: document.getElementById('btnCloseReceiptModal'),
+        btnCloseReceiptBottom: document.getElementById('btnCloseReceiptBottom'),
+        btnDownloadReceipt: document.getElementById('btnDownloadReceipt'),
+        toastContainer: document.getElementById('toastContainer')
+      };
+
+      // ============================================================
+      // 4. Utilities & Helpers
+      // ============================================================
+      function generateId(prefix) {
+        return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
+      }
+
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function formatKRW(num) {
+        return Math.round(num).toLocaleString('ko-KR') + '원';
+      }
+
+      function formatCurrencyValue(amount, currencyCode) {
+        const meta = CURRENCIES[currencyCode] || CURRENCIES.KRW;
+        const formatted = Number.isInteger(amount)
+          ? amount.toLocaleString('ko-KR')
+          : Number(amount.toFixed(2)).toLocaleString('ko-KR');
+        if (currencyCode === 'KRW') return `${formatted}원`;
+        if (currencyCode === 'JPY') return `¥${formatted}`;
+        if (currencyCode === 'USD') return `$${formatted}`;
+        if (currencyCode === 'EUR') return `€${formatted}`;
+        if (currencyCode === 'TWD') return `NT$${formatted}`;
+        if (currencyCode === 'VND') return `${formatted}₫`;
+        return `${formatted} ${meta.code}`;
+      }
+
+      function parseNumericInput(val) {
+        if (!val) return 0;
+        const cleaned = String(val).replace(/[^0-9.]/g, '');
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+      }
+
+      function formatNumericInputString(raw) {
+        const cleaned = String(raw).replace(/[^0-9.]/g, '');
+        if (!cleaned) return '';
+        const parts = cleaned.split('.');
+        const intPart = parts[0] ? parseInt(parts[0], 10).toLocaleString('ko-KR') : '0';
+        if (parts.length > 1) {
+          return `${intPart}.${parts[1].slice(0, 2)}`;
+        }
+        return intPart;
+      }
+
+      /**
+       * Convert any supported currency amount into KRW using current state.rates
+       */
+      function convertToKRW(amount, currencyCode) {
+        if (!currencyCode || currencyCode === 'KRW') return amount;
+        const meta = CURRENCIES[currencyCode];
+        if (!meta) return amount;
+        const rate = Number(state.rates[currencyCode]) || meta.defaultRate;
+        return (amount / meta.unit) * rate;
+      }
+
+      function getCategoryMeta(catId) {
+        return CATEGORIES.find(c => c.id === catId) || CATEGORIES[CATEGORIES.length - 1];
+      }
+
+      function showToast(message, type = 'default') {
+        const toast = document.createElement('div');
+        let styleStr = 'background-color: #191F28; color: #FFFFFF;';
+        if (type === 'error') styleStr = 'background-color: var(--danger); color: #FFFFFF;';
+        else if (type === 'success') styleStr = 'background-color: #191F28; color: #FFFFFF;';
+        if (document.documentElement.classList.contains('dark') && type !== 'error') {
+          styleStr = 'background-color: #F2F4F7; color: #12151C;';
+        }
+
+        toast.className = 'toast-enter pointer-events-auto px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg text-center';
+        toast.setAttribute('style', styleStr);
+        toast.textContent = message;
+
+        el.toastContainer.innerHTML = '';
+        el.toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(8px)';
+          setTimeout(() => toast.remove(), 240);
+        }, 2300);
+      }
+
+      /**
+       * iFrame-safe Clipboard Copy using document.execCommand('copy')
+       */
+      function copyTextToClipboard(text, successMsg) {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.top = '-9999px';
+          textarea.style.left = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+          textarea.setSelectionRange(0, text.length);
+          const ok = document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          if (ok) {
+            showToast(successMsg, 'success');
+            return true;
+          }
+          showToast('복사에 실패했습니다. 다시 시도해주세요.', 'error');
+          return false;
+        } catch (err) {
+          console.error('Clipboard error:', err);
+          showToast('복사 기능을 사용할 수 없습니다.', 'error');
+          return false;
+        }
+      }
+
+      // ============================================================
+      // 5. Theme Management (Dark / Light + System Detection)
+      // ============================================================
+      function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        el.iconSun.classList.toggle('hidden', !isDark);
+        el.iconMoon.classList.toggle('hidden', isDark);
+      }
+
+      function initTheme() {
+        try {
+          const saved = localStorage.getItem(THEME_KEY);
+          if (saved === 'dark' || saved === 'light') {
+            applyTheme(saved);
+            return;
+          }
+        } catch (e) {}
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+      }
+
+      function toggleTheme() {
+        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+        const next = isCurrentlyDark ? 'light' : 'dark';
+        applyTheme(next);
+        try {
+          localStorage.setItem(THEME_KEY, next);
+        } catch (e) {}
+        showToast(next === 'dark' ? '다크모드로 전환했어요 🌙' : '라이트모드로 전환했어요 ☀️');
+      }
+
+      // ============================================================
+      // 6. Persistence (localStorage + UTF-8 Safe URL Hash)
+      // ============================================================
+      function saveToLocalStorage() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.warn('localStorage save skipped:', err);
+        }
+      }
+
+      function loadFromLocalStorage() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.participants) && Array.isArray(parsed.expenses)) {
+            return {
+              title: parsed.title || '',
+              date: parsed.date || getTodayISO(),
+              roundUnit: [1, 10, 100].includes(parsed.roundUnit) ? parsed.roundUnit : 10,
+              rates: { ...getDefaultRates(), ...(parsed.rates || {}) },
+              participants: parsed.participants,
+              expenses: parsed.expenses,
+              completedTransfers: Array.isArray(parsed.completedTransfers) ? parsed.completedTransfers : []
+            };
+          }
+        } catch (err) {
+          console.warn('localStorage load failed:', err);
+        }
+        return null;
+      }
+
+      function encodeStateToHash(stateObj) {
+        try {
+          const compact = {
+            v: 2,
+            t: stateObj.title,
+            d: stateObj.date,
+            u: stateObj.roundUnit,
+            r: stateObj.rates,
+            p: stateObj.participants.map(p => [p.id, p.name, p.account || '']),
+            e: stateObj.expenses.map(ex => [
+              ex.id,
+              ex.title,
+              ex.amount,
+              ex.currency || 'KRW',
+              ex.category || 'etc',
+              ex.payerId,
+              ex.splitMode === 'custom' ? 1 : 0,
+              ex.sharedByIds || [],
+              ex.customAmounts || {}
+            ]),
+            c: stateObj.completedTransfers || []
+          };
+          const jsonStr = JSON.stringify(compact);
+          const bytes = new TextEncoder().encode(jsonStr);
+          let binary = '';
+          for (let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (err) {
+          console.error('Hash encode error:', err);
+          return null;
+        }
+      }
+
+      function decodeStateFromHash(hashStr) {
+        try {
+          if (!hashStr || !hashStr.includes('data=')) return null;
+          const match = hashStr.match(/data=([A-Za-z0-9\-_]+)/);
+          if (!match || !match[1]) return null;
+
+          let b64 = match[1].replace(/-/g, '+').replace(/_/g, '/');
+          while (b64.length % 4 !== 0) b64 += '=';
+
+          const binary = atob(b64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          const compact = JSON.parse(new TextDecoder().decode(bytes));
+          if (!compact || !Array.isArray(compact.p) || !Array.isArray(compact.e)) return null;
+
+          // Backward compatible with v1 & v2 hashes
+          const isV2 = compact.v === 2;
+          return {
+            title: typeof compact.t === 'string' ? compact.t : '',
+            date: typeof compact.d === 'string' ? compact.d : getTodayISO(),
+            roundUnit: [1, 10, 100].includes(compact.u) ? compact.u : 10,
+            rates: { ...getDefaultRates(), ...(compact.r || {}) },
+            participants: compact.p.map(item => ({
+              id: String(item[0]),
+              name: String(item[1]),
+              account: String(item[2] || '')
+            })),
+            expenses: compact.e.map(item => {
+              if (isV2) {
+                return {
+                  id: String(item[0]),
+                  title: String(item[1]),
+                  amount: Number(item[2]) || 0,
+                  currency: String(item[3] || 'KRW'),
+                  category: String(item[4] || 'etc'),
+                  payerId: String(item[5]),
+                  splitMode: item[6] === 1 ? 'custom' : 'equal',
+                  sharedByIds: Array.isArray(item[7]) ? item[7].map(String) : [],
+                  customAmounts: item[8] && typeof item[8] === 'object' ? item[8] : {}
+                };
+              }
+              return {
+                id: String(item[0]),
+                title: String(item[1]),
+                amount: Number(item[2]) || 0,
+                currency: 'KRW',
+                category: 'etc',
+                payerId: String(item[3]),
+                splitMode: 'equal',
+                sharedByIds: Array.isArray(item[4]) ? item[4].map(String) : [],
+                customAmounts: {}
+              };
+            }),
+            completedTransfers: Array.isArray(compact.c) ? compact.c.map(String) : []
+          };
+        } catch (err) {
+          console.error('Hash decode error:', err);
+          return null;
+        }
+      }
+
+      function persistState() {
+        saveToLocalStorage();
+        try {
+          if (state.participants.length === 0 && state.expenses.length === 0 && !state.title) {
+            if (window.location.hash) {
+              history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+            return;
+          }
+          const encoded = encodeStateToHash(state);
+          if (encoded) {
+            history.replaceState(null, '', '#data=' + encoded);
+          }
+        } catch (e) {}
+      }
+
+      // ============================================================
+      // 7. Settlement Algorithm (Greedy Min-Cash-Flow + Analytics)
+      // ============================================================
+      function calculateSettlement() {
+        const map = {};
+        state.participants.forEach(p => {
+          map[p.id] = {
+            id: p.id,
+            name: p.name,
+            account: p.account || '',
+            paid: 0,
+            owed: 0,
+            net: 0
+          };
+        });
+
+        let totalSpendKRW = 0;
+        const categoryTotals = {};
+        CATEGORIES.forEach(c => { categoryTotals[c.id] = 0; });
+
+        state.expenses.forEach(ex => {
+          if (!map[ex.payerId] || ex.amount <= 0) return;
+          const krwAmount = convertToKRW(ex.amount, ex.currency || 'KRW');
+
+          if (ex.splitMode === 'custom' && ex.customAmounts) {
+            const entries = Object.entries(ex.customAmounts).filter(([pid, val]) => map[pid] && Number(val) > 0);
+            if (entries.length === 0) return;
+
+            totalSpendKRW += krwAmount;
+            map[ex.payerId].paid += krwAmount;
+            categoryTotals[ex.category || 'etc'] = (categoryTotals[ex.category || 'etc'] || 0) + krwAmount;
+
+            const customSumRaw = entries.reduce((acc, [, val]) => acc + Number(val), 0);
+            if (customSumRaw > 0) {
+              entries.forEach(([pid, val]) => {
+                // Proportional conversion ensures exact sum alignment with krwAmount
+                const shareKRW = (Number(val) / customSumRaw) * krwAmount;
+                map[pid].owed += shareKRW;
+              });
+            }
+          } else {
+            const validShared = (ex.sharedByIds || []).filter(id => map[id]);
+            if (validShared.length === 0) return;
+
+            totalSpendKRW += krwAmount;
+            map[ex.payerId].paid += krwAmount;
+            categoryTotals[ex.category || 'etc'] = (categoryTotals[ex.category || 'etc'] || 0) + krwAmount;
+
+            const exactShare = krwAmount / validShared.length;
+            validShared.forEach(id => {
+              map[id].owed += exactShare;
+            });
+          }
+        });
+
+        const summaries = Object.values(map).map(item => {
+          item.net = item.paid - item.owed;
+          return item;
+        });
+
+        // Greedy Min-Cash-Flow
+        const EPSILON = 0.01;
+        const debtors = [];
+        const creditors = [];
+
+        summaries.forEach(s => {
+          if (s.net < -EPSILON) {
+            debtors.push({ id: s.id, name: s.name, amount: -s.net });
+          } else if (s.net > EPSILON) {
+            creditors.push({ id: s.id, name: s.name, account: s.account, amount: s.net });
+          }
+        });
+
+        debtors.sort((a, b) => b.amount - a.amount);
+        creditors.sort((a, b) => b.amount - a.amount);
+
+        const rawTransfers = [];
+        let i = 0;
+        let j = 0;
+
+        while (i < debtors.length && j < creditors.length) {
+          const d = debtors[i];
+          const c = creditors[j];
+          const transferAmt = Math.min(d.amount, c.amount);
+
+          if (transferAmt > EPSILON) {
+            rawTransfers.push({
+              key: `${d.id}->${c.id}`,
+              fromId: d.id,
+              fromName: d.name,
+              toId: c.id,
+              toName: c.name,
+              toAccount: c.account,
+              exactAmount: transferAmt
+            });
+          }
+
+          d.amount -= transferAmt;
+          c.amount -= transferAmt;
+
+          if (d.amount <= EPSILON) i++;
+          if (c.amount <= EPSILON) j++;
+        }
+
+        const unit = state.roundUnit;
+        const transfers = rawTransfers
+          .map(t => ({
+            ...t,
+            amount: Math.round(t.exactAmount / unit) * unit
+          }))
+          .filter(t => t.amount > 0);
+
+        return { totalSpendKRW, categoryTotals, summaries, transfers };
+      }
+
+      // ============================================================
+      // 8. Rendering Functions
+      // ============================================================
+      function renderAll() {
+        el.eventTitleInput.value = state.title;
+        el.eventDateInput.value = state.date;
+        renderParticipants();
+        renderExchangeRates();
+        renderCategoryPills();
+        renderExpenseFormControls();
+        renderExpensesList();
+        renderAnalyticsAndSettlement();
+        persistState();
+      }
+
+      function renderParticipants() {
+        const count = state.participants.length;
+        el.participantCountBadge.textContent = `${count}명`;
+        el.participantHint.classList.toggle('hidden', count === 0);
+
+        if (count === 0) {
+          el.participantChipsContainer.innerHTML = `
+            <div class="w-full py-4 text-center rounded-2xl bg-input/70 text-xs text-muted">
+              참석자를 추가해주세요 (예: 민수, 지은, 현우, 서연)
+            </div>
+          `;
+          el.accountEditorBox.classList.add('hidden');
+          editingParticipantId = null;
+          return;
+        }
+
+        el.participantChipsContainer.innerHTML = state.participants.map(p => {
+          const isEditing = editingParticipantId === p.id;
+          const hasAcc = Boolean(p.account && p.account.trim());
+          return `
+            <div class="inline-flex items-center gap-1 pl-3 pr-1.5 py-1.5 rounded-full text-xs font-bold border transition-all ${
+              isEditing
+                ? 'bg-primary text-white border-primary shadow-sm'
+                : 'bg-surface-sub text-main border-base hover:border-primary'
+            }">
+              <button type="button" data-action="edit-account" data-id="${escapeHtml(p.id)}" class="flex items-center gap-1.5 focus:outline-none">
+                <span>${escapeHtml(p.name)}</span>
+                ${hasAcc
+                  ? `<span class="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-full ${isEditing ? 'bg-white/20 text-white' : 'bg-primary-light text-primary'}" title="${escapeHtml(p.account)}">
+                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                      계좌
+                    </span>`
+                  : `<span class="text-[10px] font-medium ${isEditing ? 'text-white/80' : 'text-muted'}">+계좌</span>`
+                }
+              </button>
+              <button type="button" data-action="remove-participant" data-id="${escapeHtml(p.id)}" class="w-5 h-5 rounded-full flex items-center justify-center ${
+                isEditing ? 'hover:bg-white/20 text-white' : 'text-muted hover:text-danger'
+              } transition" aria-label="${escapeHtml(p.name)} 삭제">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderExchangeRates() {
+        const foreignKeys = ['JPY', 'USD', 'EUR', 'TWD', 'VND'];
+        el.exchangeRateInputs.innerHTML = foreignKeys.map(code => {
+          const meta = CURRENCIES[code];
+          const val = state.rates[code] ?? meta.defaultRate;
+          return `
+            <div class="flex items-center justify-between gap-1.5 bg-surface px-2.5 py-1.5 rounded-xl border border-base">
+              <span class="text-[11px] font-bold text-sub shrink-0">${meta.label}</span>
+              <div class="flex items-center gap-1">
+                <input type="number" step="any" data-rate-code="${code}" value="${val}" class="rate-input w-16 text-right text-xs font-extrabold bg-transparent text-main focus:outline-none">
+                <span class="text-[10.5px] text-muted">원</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        updateFxPreview();
+      }
+
+      function updateFxPreview() {
+        const code = el.expenseCurrency.value;
+        const meta = CURRENCIES[code] || CURRENCIES.KRW;
+        el.amountCurrencySymbol.textContent = meta.symbol;
+
+        if (code === 'KRW') {
+          el.fxPreviewBar.classList.add('hidden');
+          return;
+        }
+        el.fxPreviewBar.classList.remove('hidden');
+        const rate = Number(state.rates[code]) || meta.defaultRate;
+        const amt = parseNumericInput(el.expenseAmount.value);
+        const converted = convertToKRW(amt, code);
+        el.fxRateInfo.textContent = `적용 환율: ${meta.label} = ${rate.toLocaleString('ko-KR')}원`;
+        el.fxConvertedKRW.textContent = formatKRW(converted);
+      }
+
+      function renderCategoryPills() {
+        el.categoryPillsContainer.innerHTML = CATEGORIES.map(cat => {
+          const active = selectedCategory === cat.id;
+          return `
+            <button type="button" data-action="select-category" data-cat="${cat.id}" class="px-2.5 py-1.5 rounded-xl text-[11.5px] font-bold border transition-all active:scale-95 flex items-center gap-1 ${
+              active
+                ? 'bg-primary-light border-primary text-primary'
+                : 'bg-input border-transparent text-sub hover:text-main'
+            }">
+              <span>${cat.emoji}</span>
+              <span>${cat.label}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      function renderExpenseFormControls() {
+        const currentPayer = el.expensePayer.value;
+
+        // Update split mode tabs UI
+        if (currentSplitMode === 'equal') {
+          el.tabSplitEqual.className = 'px-3 py-1.5 rounded-[10px] bg-surface text-main shadow-sm transition-all';
+          el.tabSplitCustom.className = 'px-3 py-1.5 rounded-[10px] text-muted hover:text-main transition-all';
+          el.equalSplitArea.classList.remove('hidden');
+          el.customSplitArea.classList.add('hidden');
+          el.btnToggleSelectAll.classList.toggle('hidden', state.participants.length === 0);
+        } else {
+          el.tabSplitCustom.className = 'px-3 py-1.5 rounded-[10px] bg-surface text-main shadow-sm transition-all';
+          el.tabSplitEqual.className = 'px-3 py-1.5 rounded-[10px] text-muted hover:text-main transition-all';
+          el.equalSplitArea.classList.add('hidden');
+          el.customSplitArea.classList.remove('hidden');
+          el.btnToggleSelectAll.classList.add('hidden');
+        }
+
+        // Edit Mode Banner & Button Label
+        el.editModeBanner.classList.toggle('hidden', !editingExpenseId);
+        el.btnAddExpense.textContent = editingExpenseId ? '✓ 지출 내역 수정 완료' : '+ 지출 내역 추가하기';
+
+        if (state.participants.length === 0) {
+          el.expensePayer.innerHTML = '<option value="">참석자 먼저 추가</option>';
+          el.sharedByContainer.innerHTML = '<p class="text-xs text-muted py-1">참석자를 추가하면 여기에 표시됩니다.</p>';
+          el.customSplitInputs.innerHTML = '<p class="text-xs text-muted py-1">참석자를 추가하면 금액을 입력할 수 있습니다.</p>';
+          return;
+        }
+
+        // Payer dropdown
+        el.expensePayer.innerHTML = state.participants.map(p =>
+          `<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}</option>`
+        ).join('');
+        if (state.participants.some(p => p.id === currentPayer)) {
+          el.expensePayer.value = currentPayer;
+        }
+
+        // Sync valid shared IDs
+        const validIds = new Set(state.participants.map(p => p.id));
+        for (const id of selectedSharedIds) {
+          if (!validIds.has(id)) selectedSharedIds.delete(id);
+        }
+
+        // Equal split selectable pills
+        el.sharedByContainer.innerHTML = state.participants.map(p => {
+          const checked = selectedSharedIds.has(p.id);
+          return `
+            <button type="button" data-action="toggle-shared" data-id="${escapeHtml(p.id)}" class="px-3 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-1.5 ${
+              checked
+                ? 'bg-primary-light border-primary text-primary'
+                : 'bg-input border-transparent text-muted hover:text-sub'
+            }">
+              <span class="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9.5px] ${
+                checked ? 'bg-primary text-white' : 'bg-black/15 text-white'
+              }">✓</span>
+              ${escapeHtml(p.name)}
+            </button>
+          `;
+        }).join('');
+
+        const allSelected = selectedSharedIds.size === state.participants.length;
+        el.btnToggleSelectAll.textContent = allSelected
+          ? `전체 해제 (${selectedSharedIds.size}명)`
+          : `전체 선택 (${selectedSharedIds.size}/${state.participants.length})`;
+
+        // Custom split inputs
+        const currMeta = CURRENCIES[el.expenseCurrency.value] || CURRENCIES.KRW;
+        el.customSplitInputs.innerHTML = state.participants.map(p => {
+          const val = customDraftAmounts[p.id] || '';
+          return `
+            <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-input">
+              <span class="text-xs font-bold text-main truncate">${escapeHtml(p.name)}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <input type="text" inputmode="decimal" data-custom-pid="${escapeHtml(p.id)}" value="${escapeHtml(val)}" placeholder="0" class="custom-amt-input w-28 px-2.5 py-1.5 rounded-lg bg-surface text-right text-xs font-extrabold text-main border border-base focus:outline-none focus:border-primary">
+                <span class="text-[11px] font-bold text-muted w-5">${currMeta.symbol}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        updateCustomSplitStatus();
+      }
+
+      function updateCustomSplitStatus() {
+        const totalAmt = parseNumericInput(el.expenseAmount.value);
+        const code = el.expenseCurrency.value;
+        let sum = 0;
+        state.participants.forEach(p => {
+          sum += parseNumericInput(customDraftAmounts[p.id]);
+        });
+        const diff = totalAmt - sum;
+
+        if (Math.abs(diff) < 0.01 && totalAmt > 0) {
+          el.customSplitStatus.className = 'font-bold text-success';
+          el.customSplitStatus.textContent = `딱 맞아요! (${formatCurrencyValue(sum, code)})`;
+        } else if (diff > 0) {
+          el.customSplitStatus.className = 'font-bold text-sub';
+          el.customSplitStatus.textContent = `남은 금액: ${formatCurrencyValue(diff, code)}`;
+        } else if (diff < 0) {
+          el.customSplitStatus.className = 'font-bold text-danger';
+          el.customSplitStatus.textContent = `초과 금액: ${formatCurrencyValue(Math.abs(diff), code)}`;
+        } else {
+          el.customSplitStatus.className = 'font-bold text-muted';
+          el.customSplitStatus.textContent = `합계: ${formatCurrencyValue(sum, code)}`;
+        }
+      }
+
+      function renderExpensesList() {
+        el.expenseCountBadge.textContent = `${state.expenses.length}건`;
+
+        if (state.expenses.length === 0) {
+          el.expenseListContainer.innerHTML = `
+            <div class="py-7 text-center text-xs text-muted leading-relaxed">
+              등록된 지출 내역이 없어요.<br>위에서 지출을 추가하거나 상단 <strong class="text-primary">샘플</strong>을 눌러보세요.
+            </div>
+          `;
+          return;
+        }
+
+        const pMap = Object.fromEntries(state.participants.map(p => [p.id, p.name]));
+
+        el.expenseListContainer.innerHTML = state.expenses.map(ex => {
+          const payerName = pMap[ex.payerId] || '알 수 없음';
+          const cat = getCategoryMeta(ex.category);
+          const isEditing = editingExpenseId === ex.id;
+          const isForeign = ex.currency && ex.currency !== 'KRW';
+          const krwVal = convertToKRW(ex.amount, ex.currency || 'KRW');
+
+          let splitSummary = '';
+          if (ex.splitMode === 'custom') {
+            const count = Object.values(ex.customAmounts || {}).filter(v => Number(v) > 0).length;
+            splitSummary = `직접 입력 (${count}명)`;
+          } else {
+            const sharedNames = (ex.sharedByIds || []).map(id => pMap[id]).filter(Boolean);
+            const isAll = sharedNames.length === state.participants.length && state.participants.length > 0;
+            splitSummary = isAll ? `전원 1/N (${sharedNames.length}명)` : `${sharedNames.join(', ')}`;
+          }
+
+          return `
+            <div class="p-3.5 rounded-2xl border transition-all cursor-pointer ${
+              isEditing
+                ? 'bg-primary-light/60 border-primary'
+                : 'bg-surface-sub border-base hover:border-primary/50'
+            }" data-action="edit-expense" data-id="${escapeHtml(ex.id)}">
+              <div class="flex items-start justify-between gap-2.5">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-xs px-1.5 py-0.5 rounded-lg bg-surface border border-base font-bold text-sub shrink-0">${cat.emoji} ${cat.label}</span>
+                    <span class="text-[13.5px] font-bold text-main truncate">${escapeHtml(ex.title)}</span>
+                  </div>
+                  <p class="text-[11.5px] text-muted mt-1.5 truncate">
+                    <strong class="text-sub">${escapeHtml(payerName)}</strong> 결제 · ${escapeHtml(splitSummary)}
+                  </p>
+                </div>
+
+                <div class="flex items-start gap-2 shrink-0">
+                  <div class="text-right">
+                    <div class="text-[14px] font-extrabold text-main leading-tight">${formatCurrencyValue(ex.amount, ex.currency || 'KRW')}</div>
+                    ${isForeign ? `<div class="text-[10.5px] font-semibold text-primary mt-0.5">≈ ${formatKRW(krwVal)}</div>` : ''}
+                  </div>
+                  <button type="button" data-action="delete-expense" data-id="${escapeHtml(ex.id)}" class="w-7 h-7 rounded-xl bg-surface border border-base text-muted hover:text-danger hover:border-danger/40 flex items-center justify-center transition" aria-label="지출 삭제">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderAnalyticsAndSettlement() {
+        const { totalSpendKRW, categoryTotals, summaries, transfers } = calculateSettlement();
+
+        // Update rounding unit buttons
+        document.querySelectorAll('.unit-btn').forEach(btn => {
+          const u = Number(btn.dataset.unit);
+          if (u === state.roundUnit) {
+            btn.className = 'unit-btn px-2 py-1 rounded-lg bg-surface text-main shadow-sm transition-all';
+          } else {
+            btn.className = 'unit-btn px-2 py-1 rounded-lg text-muted hover:text-main transition-all';
+          }
+        });
+
+        // Analytics Section
+        if (state.expenses.length === 0 || totalSpendKRW <= 0) {
+          el.analyticsSection.classList.add('hidden');
+        } else {
+          el.analyticsSection.classList.remove('hidden');
+          el.totalSpendDisplay.textContent = formatKRW(totalSpendKRW);
+          const avg = state.participants.length > 0 ? totalSpendKRW / state.participants.length : 0;
+          el.avgSpendBadge.textContent = `1인 평균 ${formatKRW(avg)}`;
+
+          const activeCats = CATEGORIES
+            .map(c => ({ ...c, amount: categoryTotals[c.id] || 0 }))
+            .filter(c => c.amount > 0)
+            .sort((a, b) => b.amount - a.amount);
+
+          el.categoryStackedBar.innerHTML = activeCats.map(c => {
+            const pct = (c.amount / totalSpendKRW) * 100;
+            return `<div style="width: ${pct}%; background-color: ${c.color};" title="${c.label} ${pct.toFixed(1)}%" class="h-full transition-all duration-300"></div>`;
+          }).join('');
+
+          el.categoryLegendContainer.innerHTML = activeCats.map(c => {
+            const pct = Math.round((c.amount / totalSpendKRW) * 100);
+            return `
+              <div class="flex items-center justify-between text-[11.5px]">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${c.color};"></span>
+                  <span class="font-semibold text-sub truncate">${c.emoji} ${c.label}</span>
+                  <span class="text-[10.5px] font-bold text-muted">${pct}%</span>
+                </div>
+                <span class="font-bold text-main shrink-0 ml-1">${formatKRW(c.amount)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Settlement Transfers
+        if (state.expenses.length === 0 || state.participants.length === 0) {
+          el.transferProgressBox.classList.add('hidden');
+          el.breakdownWrapper.classList.add('hidden');
+          el.transfersContainer.innerHTML = `
+            <div class="py-7 text-center rounded-2xl bg-input/70 text-xs text-muted leading-relaxed">
+              참석자와 지출 내역을 입력하면<br>최소 송금 횟수로 깔끔하게 계산해드려요.
+            </div>
+          `;
+          return;
+        }
+
+        el.breakdownWrapper.classList.remove('hidden');
+
+        if (transfers.length === 0) {
+          el.transferProgressBox.classList.add('hidden');
+          el.transfersContainer.innerHTML = `
+            <div class="py-6 text-center rounded-2xl bg-success-light text-success text-sm font-extrabold">
+              🎉 모두 정산 완료! 주고받을 금액이 없어요.
+            </div>
+          `;
+        } else {
+          // Prune stale completed transfer keys & compute progress
+          const currentKeys = new Set(transfers.map(t => t.key));
+          const completedCount = transfers.filter(t => state.completedTransfers.includes(t.key)).length;
+          const pct = Math.round((completedCount / transfers.length) * 100);
+
+          el.transferProgressBox.classList.remove('hidden');
+          el.transferProgressText.textContent = `${completedCount} / ${transfers.length} 완료`;
+          el.transferProgressBar.style.width = `${pct}%`;
+
+          el.transfersContainer.innerHTML = transfers.map(t => {
+            const isDone = state.completedTransfers.includes(t.key);
+            return `
+              <div class="p-3.5 rounded-2xl border transition-all ${
+                isDone
+                  ? 'bg-success-light/60 border-success/40'
+                  : 'bg-primary-light/45 border-primary/25'
+              }">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <!-- Completion Checkbox -->
+                    <button type="button" data-action="toggle-transfer-done" data-key="${escapeHtml(t.key)}" class="w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all active:scale-90 ${
+                      isDone
+                        ? 'bg-success border-success text-white'
+                        : 'bg-surface border-base hover:border-primary'
+                    }" aria-label="송금 완료 체크">
+                      ${isDone ? '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                    </button>
+
+                    <div class="flex items-center gap-1.5 min-w-0 ${isDone ? 'opacity-60 line-through' : ''}">
+                      <span class="px-2 py-0.5 rounded-lg bg-surface text-xs font-bold text-main border border-base truncate">${escapeHtml(t.fromName)}</span>
+                      <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                      <span class="px-2 py-0.5 rounded-lg bg-primary text-xs font-bold text-white truncate">${escapeHtml(t.toName)}</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    ${isDone ? '<span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-success text-white">완료</span>' : ''}
+                    <span class="text-[15px] font-extrabold ${isDone ? 'text-success line-through opacity-75' : 'text-primary'}">${t.amount.toLocaleString('ko-KR')}원</span>
+                  </div>
+                </div>
+
+                ${t.toAccount ? `
+                  <div class="flex items-center justify-between gap-2 mt-2.5 pt-2 border-t border-base/70">
+                    <span class="text-[11.5px] text-sub truncate">입금 계좌: <strong class="text-main">${escapeHtml(t.toAccount)}</strong></span>
+                    <button type="button" data-action="copy-account" data-account="${escapeHtml(t.toAccount)}" data-name="${escapeHtml(t.toName)}" class="px-2.5 py-1 rounded-lg bg-surface text-[11px] font-bold text-primary border border-primary/30 active:scale-95 transition shrink-0">
+                      복사
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Individual Breakdown Table
+        el.breakdownTableBody.innerHTML = summaries.map(s => {
+          const roundedNet = Math.round(s.net);
+          const netClass = roundedNet > 0 ? 'text-primary font-extrabold' : roundedNet < 0 ? 'text-danger font-extrabold' : 'text-muted font-semibold';
+          const prefix = roundedNet > 0 ? '+' : '';
+          return `
+            <tr>
+              <td class="py-2.5 font-bold text-main">${escapeHtml(s.name)}</td>
+              <td class="py-2.5 text-right text-sub">${Math.round(s.paid).toLocaleString('ko-KR')}원</td>
+              <td class="py-2.5 text-right text-sub">${Math.round(s.owed).toLocaleString('ko-KR')}원</td>
+              <td class="py-2.5 text-right ${netClass}">${prefix}${roundedNet.toLocaleString('ko-KR')}원</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // ============================================================
+      // 9. Thermal Receipt PNG Generator (Pure HTML5 Canvas API)
+      // ============================================================
+      function generateReceiptPNG() {
+        const { totalSpendKRW, transfers } = calculateSettlement();
+        const scale = 2; // High-DPI Retina crispness
+        const width = 380;
+        const padX = 26;
+        const innerW = width - padX * 2;
+        const zigHeight = 9;
+        const zigCount = 26;
+
+        // Prepare receipt lines dynamically to compute exact height
+        const title = state.title.trim() || '모임 정산 영수증';
+        const dateStr = state.date || getTodayISO();
+        const participantNames = state.participants.map(p => p.name).join(', ');
+        const avgPerPerson = state.participants.length > 0 ? Math.round(totalSpendKRW / state.participants.length) : 0;
+
+        // Top 8 expenses to keep receipt sleek and readable
+        const displayExpenses = state.expenses.slice(0, 8);
+        const hiddenExpenseCount = Math.max(0, state.expenses.length - displayExpenses.length);
+
+        let height = 240; // Header + summary block
+        height += displayExpenses.length * 24 + (hiddenExpenseCount > 0 ? 22 : 0) + 34;
+        height += 40; // Transfer section header
+        if (transfers.length === 0) {
+          height += 30;
+        } else {
+          transfers.forEach(t => {
+            height += t.toAccount ? 44 : 26;
+          });
+        }
+        height += 115; // Footer barcode + watermark + bottom zig-zag
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+
+        const fontSans = '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif';
+        const fontMono = '"SF Mono", Menlo, Consolas, monospace';
+
+        // Transparent canvas background, draw thermal paper with serrated top & bottom
+        ctx.fillStyle = '#FCFBF8';
+        ctx.beginPath();
+        const zigW = width / zigCount;
+        ctx.moveTo(0, zigHeight);
+        for (let i = 0; i < zigCount; i++) {
+          ctx.lineTo(i * zigW + zigW / 2, 0);
+          ctx.lineTo((i + 1) * zigW, zigHeight);
+        }
+        ctx.lineTo(width, height - zigHeight);
+        for (let i = zigCount; i > 0; i--) {
+          ctx.lineTo(i * zigW - zigW / 2, height);
+          ctx.lineTo((i - 1) * zigW, height - zigHeight);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // Helper: Dotted Divider
+        function drawDivider(yPos, dashed = true) {
+          ctx.save();
+          ctx.strokeStyle = '#C8C5BE';
+          ctx.lineWidth = 1.2;
+          if (dashed) ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(padX, yPos);
+          ctx.lineTo(width - padX, yPos);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Helper: Truncate text to fit maxWidth
+        function fitText(text, maxW) {
+          if (ctx.measureText(text).width <= maxW) return text;
+          let t = text;
+          while (t.length > 1 && ctx.measureText(t + '…').width > maxW) {
+            t = t.slice(0, -1);
+          }
+          return t + '…';
+        }
+
+        let y = 42;
+
+        // Top Receipt Brand
+        ctx.fillStyle = '#3182F6';
+        ctx.font = `800 12px ${fontSans}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('★  딱깔끔 N빵 정산 영수증  ★', width / 2, y);
+
+        y += 28;
+        ctx.fillStyle = '#191F28';
+        ctx.font = `800 19px ${fontSans}`;
+        ctx.fillText(fitText(title, innerW), width / 2, y);
+
+        y += 20;
+        ctx.fillStyle = '#6B7280';
+        ctx.font = `500 11.5px ${fontMono}`;
+        ctx.fillText(`DATE: ${dateStr}  |  인원: ${state.participants.length}명`, width / 2, y);
+
+        y += 18;
+        ctx.font = `500 11px ${fontSans}`;
+        ctx.fillText(fitText(`참석: ${participantNames}`, innerW), width / 2, y);
+
+        y += 18;
+        drawDivider(y, false);
+
+        // Total Spend Highlight
+        y += 28;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#4E5968';
+        ctx.font = `700 13px ${fontSans}`;
+        ctx.fillText('총 지출 금액', padX, y);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#191F28';
+        ctx.font = `800 20px ${fontSans}`;
+        ctx.fillText(formatKRW(totalSpendKRW), width - padX, y);
+
+        y += 20;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#8B95A1';
+        ctx.font = `500 11px ${fontSans}`;
+        ctx.fillText(`총 ${state.expenses.length}건 · 1인 평균`, padX, y);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#4E5968';
+        ctx.font = `700 12px ${fontSans}`;
+        ctx.fillText(formatKRW(avgPerPerson), width - padX, y);
+
+        y += 16;
+        drawDivider(y, true);
+
+        // Expense Summary Section
+        y += 22;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#191F28';
+        ctx.font = `800 12px ${fontSans}`;
+        ctx.fillText('[ 주요 지출 내역 ]', padX, y);
+
+        y += 20;
+        displayExpenses.forEach(ex => {
+          const krwVal = convertToKRW(ex.amount, ex.currency || 'KRW');
+          const cat = getCategoryMeta(ex.category);
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#333D4B';
+          ctx.font = `500 11.5px ${fontSans}`;
+          ctx.fillText(fitText(`${cat.label} · ${ex.title}`, innerW - 95), padX, y);
+
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#191F28';
+          ctx.font = `700 11.5px ${fontMono}`;
+          ctx.fillText(formatKRW(krwVal), width - padX, y);
+          y += 24;
+        });
+
+        if (hiddenExpenseCount > 0) {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#8B95A1';
+          ctx.font = `500 11px ${fontSans}`;
+          ctx.fillText(`외 ${hiddenExpenseCount}건의 지출 내역 포함`, width / 2, y);
+          y += 20;
+        }
+
+        drawDivider(y, true);
+
+        // Minimum Transfers Section
+        y += 24;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#3182F6';
+        ctx.font = `800 12.5px ${fontSans}`;
+        const unitLabel = state.roundUnit > 1 ? ` (${state.roundUnit}원 반올림)` : '';
+        ctx.fillText(`[ 최소 송금 안내${unitLabel} ]`, padX, y);
+
+        y += 22;
+        if (transfers.length === 0) {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#00B86B';
+          ctx.font = `700 12px ${fontSans}`;
+          ctx.fillText('모두 정산 완료! 보낼 금액이 없습니다.', width / 2, y);
+          y += 26;
+        } else {
+          transfers.forEach(t => {
+            const isDone = state.completedTransfers.includes(t.key);
+            ctx.textAlign = 'left';
+            ctx.fillStyle = isDone ? '#00B86B' : '#191F28';
+            ctx.font = `700 12.5px ${fontSans}`;
+            const statusPrefix = isDone ? '[완료] ' : '';
+            ctx.fillText(fitText(`${statusPrefix}${t.fromName} → ${t.toName}`, innerW - 105), padX, y);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = isDone ? '#00B86B' : '#3182F6';
+            ctx.font = `800 13px ${fontSans}`;
+            ctx.fillText(`${t.amount.toLocaleString('ko-KR')}원`, width - padX, y);
+
+            if (t.toAccount) {
+              y += 16;
+              ctx.textAlign = 'left';
+              ctx.fillStyle = '#6B7280';
+              ctx.font = `500 10.5px ${fontSans}`;
+              ctx.fillText(fitText(`  └ 계좌: ${t.toAccount}`, innerW), padX, y);
+              y += 26;
+            } else {
+              y += 26;
+            }
+          });
+        }
+
+        y += 4;
+        drawDivider(y, false);
+
+        // Decorative Thermal Barcode
+        y += 18;
+        const barW = innerW * 0.72;
+        const barStartX = (width - barW) / 2;
+        const barH = 32;
+        let bx = barStartX;
+        const seedPattern = [2, 1, 3, 1, 2, 2, 1, 3, 1, 1, 2, 3, 1, 2, 1, 2, 3, 1, 1, 2, 2, 1, 3, 2, 1, 2, 1, 3, 1, 2];
+        ctx.fillStyle = '#191F28';
+        let idx = 0;
+        while (bx < barStartX + barW - 4) {
+          const w = seedPattern[idx % seedPattern.length] * 1.6;
+          if (idx % 2 === 0) {
+            ctx.fillRect(bx, y, w, barH);
+          }
+          bx += w + 1.5;
+          idx++;
+        }
+
+        // Watermark
+        y += barH + 18;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#8B95A1';
+        ctx.font = `700 10.5px ${fontMono}`;
+        ctx.fillText('TTAK-NBBANG · 딱깔끔 N빵으로 정산됨', width / 2, y);
+
+        return canvas.toDataURL('image/png');
+      }
+
+      // ============================================================
+      // 10. Action Handlers
+      // ============================================================
+      function addParticipant() {
+        const name = el.newParticipantName.value.trim();
+        const account = el.newParticipantAccount.value.trim();
+
+        if (!name) {
+          showToast('참석자 이름을 입력해주세요.', 'error');
+          el.newParticipantName.focus();
+          return;
+        }
+        if (state.participants.some(p => p.name === name)) {
+          showToast('이미 등록된 이름입니다.', 'error');
+          el.newParticipantName.focus();
+          return;
+        }
+
+        const newP = { id: generateId('p'), name, account };
+        state.participants.push(newP);
+        selectedSharedIds.add(newP.id);
+
+        el.newParticipantName.value = '';
+        el.newParticipantAccount.value = '';
+        el.newParticipantName.focus();
+        renderAll();
+      }
+
+      function removeParticipant(id) {
+        const target = state.participants.find(p => p.id === id);
+        if (!target) return;
+
+        state.participants = state.participants.filter(p => p.id !== id);
+        selectedSharedIds.delete(id);
+        delete customDraftAmounts[id];
+
+        if (editingParticipantId === id) {
+          editingParticipantId = null;
+          el.accountEditorBox.classList.add('hidden');
+        }
+
+        const before = state.expenses.length;
+        state.expenses = state.expenses
+          .filter(ex => ex.payerId !== id)
+          .map(ex => {
+            const nextCustom = { ...(ex.customAmounts || {}) };
+            delete nextCustom[id];
+            return {
+              ...ex,
+              sharedByIds: (ex.sharedByIds || []).filter(sid => sid !== id),
+              customAmounts: nextCustom
+            };
+          })
+          .filter(ex => (ex.splitMode === 'custom' ? Object.keys(ex.customAmounts).length > 0 : ex.sharedByIds.length > 0));
+
+        const removed = before - state.expenses.length;
+        renderAll();
+        if (removed > 0) {
+          showToast(`${target.name}님 관련 지출 ${removed}건도 함께 정리됐어요.`);
+        }
+      }
+
+      function openAccountEditor(id) {
+        const target = state.participants.find(p => p.id === id);
+        if (!target) return;
+
+        if (editingParticipantId === id) {
+          editingParticipantId = null;
+          el.accountEditorBox.classList.add('hidden');
+          renderParticipants();
+          return;
+        }
+
+        editingParticipantId = id;
+        el.editingParticipantName.textContent = target.name;
+        el.editAccountInput.value = target.account || '';
+        el.accountEditorBox.classList.remove('hidden');
+        renderParticipants();
+        el.editAccountInput.focus();
+      }
+
+      function saveAccountEdit() {
+        if (!editingParticipantId) return;
+        const target = state.participants.find(p => p.id === editingParticipantId);
+        if (target) {
+          target.account = el.editAccountInput.value.trim();
+          showToast(`${target.name}님의 계좌가 저장되었어요.`, 'success');
+        }
+        editingParticipantId = null;
+        el.accountEditorBox.classList.add('hidden');
+        renderAll();
+      }
+
+      function resetExpenseForm() {
+        editingExpenseId = null;
+        el.expenseTitle.value = '';
+        el.expenseAmount.value = '';
+        selectedCategory = 'food';
+        currentSplitMode = 'equal';
+        selectedSharedIds = new Set(state.participants.map(p => p.id));
+        customDraftAmounts = {};
+        renderCategoryPills();
+        renderExpenseFormControls();
+        renderExpensesList();
+        updateFxPreview();
+      }
+
+      function loadExpenseIntoEditMode(expenseId) {
+        const ex = state.expenses.find(item => item.id === expenseId);
+        if (!ex) return;
+
+        editingExpenseId = ex.id;
+        el.expenseTitle.value = ex.title;
+        el.expenseCurrency.value = ex.currency || 'KRW';
+        el.expenseAmount.value = formatNumericInputString(String(ex.amount));
+        el.expensePayer.value = ex.payerId;
+        selectedCategory = ex.category || 'etc';
+        currentSplitMode = ex.splitMode === 'custom' ? 'custom' : 'equal';
+
+        if (currentSplitMode === 'equal') {
+          selectedSharedIds = new Set(ex.sharedByIds || []);
+          customDraftAmounts = {};
+        } else {
+          selectedSharedIds = new Set(state.participants.map(p => p.id));
+          customDraftAmounts = {};
+          Object.entries(ex.customAmounts || {}).forEach(([pid, val]) => {
+            customDraftAmounts[pid] = formatNumericInputString(String(val));
+          });
+        }
+
+        renderCategoryPills();
+        renderExpenseFormControls();
+        renderExpensesList();
+        updateFxPreview();
+        el.expenseTitle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('수정 모드로 불러왔어요. 수정 후 저장을 눌러주세요.');
+      }
+
+      function submitExpense() {
+        if (state.participants.length === 0) {
+          showToast('먼저 참석자를 추가해주세요.', 'error');
+          el.newParticipantName.focus();
+          return;
+        }
+
+        const title = el.expenseTitle.value.trim();
+        const amount = parseNumericInput(el.expenseAmount.value);
+        const currency = el.expenseCurrency.value || 'KRW';
+        const payerId = el.expensePayer.value;
+
+        if (!title) {
+          showToast('지출 항목 이름을 입력해주세요.', 'error');
+          el.expenseTitle.focus();
+          return;
+        }
+        if (!amount || amount <= 0) {
+          showToast('올바른 금액을 입력해주세요.', 'error');
+          el.expenseAmount.focus();
+          return;
+        }
+        if (!payerId) {
+          showToast('결제한 사람을 선택해주세요.', 'error');
+          return;
+        }
+
+        let sharedByIds = [];
+        let customAmounts = {};
+
+        if (currentSplitMode === 'equal') {
+          sharedByIds = Array.from(selectedSharedIds);
+          if (sharedByIds.length === 0) {
+            showToast('함께 쓴 사람을 최소 1명 이상 선택해주세요.', 'error');
+            return;
+          }
+        } else {
+          let sum = 0;
+          state.participants.forEach(p => {
+            const val = parseNumericInput(customDraftAmounts[p.id]);
+            if (val > 0) {
+              customAmounts[p.id] = val;
+              sum += val;
+            }
+          });
+          if (sum <= 0) {
+            showToast('직접 입력할 부담 금액을 입력해주세요.', 'error');
+            return;
+          }
+          if (Math.abs(sum - amount) > 1) {
+            showToast('입력한 금액의 합계가 총 지출 금액과 달라요!', 'error');
+            return;
+          }
+        }
+
+        const payload = {
+          id: editingExpenseId || generateId('e'),
+          title,
+          amount,
+          currency,
+          category: selectedCategory,
+          payerId,
+          splitMode: currentSplitMode,
+          sharedByIds,
+          customAmounts
+        };
+
+        if (editingExpenseId) {
+          const idx = state.expenses.findIndex(e => e.id === editingExpenseId);
+          if (idx !== -1) state.expenses[idx] = payload;
+          showToast('지출 내역을 수정했어요!', 'success');
+        } else {
+          state.expenses.unshift(payload);
+          showToast('지출 내역을 추가했어요!', 'success');
+        }
+
+        resetExpenseForm();
+        renderAll();
+      }
+
+      function distributeCustomRemainder() {
+        const totalAmt = parseNumericInput(el.expenseAmount.value);
+        if (totalAmt <= 0 || state.participants.length === 0) {
+          showToast('먼저 총 지출 금액을 입력해주세요.', 'error');
+          return;
+        }
+        let filledSum = 0;
+        const emptyPids = [];
+        state.participants.forEach(p => {
+          const val = parseNumericInput(customDraftAmounts[p.id]);
+          if (val > 0) filledSum += val;
+          else emptyPids.push(p.id);
+        });
+
+        const targetPids = emptyPids.length > 0 ? emptyPids : state.participants.map(p => p.id);
+        const remainder = emptyPids.length > 0 ? (totalAmt - filledSum) : totalAmt;
+        if (remainder <= 0) {
+          showToast('이미 합계가 총액 이상입니다.', 'error');
+          return;
+        }
+
+        const per = Math.floor((remainder / targetPids.length) * 100) / 100;
+        let distributed = 0;
+        targetPids.forEach((pid, idx) => {
+          const val = idx === targetPids.length - 1
+            ? Math.round((remainder - distributed) * 100) / 100
+            : per;
+          distributed += val;
+          customDraftAmounts[pid] = formatNumericInputString(String(val));
+        });
+
+        renderExpenseFormControls();
+      }
+
+      function loadSampleData() {
+        const p1 = { id: 'p_ms', name: '민수', account: '카카오뱅크 3333-01-2345678' };
+        const p2 = { id: 'p_je', name: '지은', account: '토스뱅크 1000-4567-8901' };
+        const p3 = { id: 'p_hw', name: '현우', account: '국민은행 123401-04-567890' };
+        const p4 = { id: 'p_sy', name: '서연', account: '' };
+
+        state = {
+          title: '오사카 2박 3일 먹방 여행',
+          date: getTodayISO(),
+          roundUnit: 100,
+          rates: getDefaultRates(),
+          participants: [p1, p2, p3, p4],
+          expenses: [
+            {
+              id: 'e_1',
+              title: '난바 호텔 2박 숙박비',
+              amount: 420000,
+              currency: 'KRW',
+              category: 'stay',
+              payerId: p1.id,
+              splitMode: 'equal',
+              sharedByIds: [p1.id, p2.id, p3.id, p4.id],
+              customAmounts: {}
+            },
+            {
+              id: 'e_2',
+              title: '유니버셜 스튜디오 입장권',
+              amount: 35600,
+              currency: 'JPY',
+              category: 'activity',
+              payerId: p2.id,
+              splitMode: 'equal',
+              sharedByIds: [p1.id, p2.id, p3.id, p4.id],
+              customAmounts: {}
+            },
+            {
+              id: 'e_3',
+              title: '도톤보리 야키니쿠 & 생맥주',
+              amount: 18400,
+              currency: 'JPY',
+              category: 'food',
+              payerId: p3.id,
+              splitMode: 'custom',
+              sharedByIds: [],
+              customAmounts: {
+                [p1.id]: 5200,
+                [p2.id]: 5200,
+                [p3.id]: 5200,
+                [p4.id]: 2800
+              }
+            },
+            {
+              id: 'e_4',
+              title: '라피트 특급열차 & 교통패스',
+              amount: 12000,
+              currency: 'JPY',
+              category: 'transport',
+              payerId: p4.id,
+              splitMode: 'equal',
+              sharedByIds: [p1.id, p2.id, p3.id, p4.id],
+              customAmounts: {}
+            },
+            {
+              id: 'e_5',
+              title: '편의점 야식 & 하이볼 (서연 제외)',
+              amount: 4500,
+              currency: 'JPY',
+              category: 'drink',
+              payerId: p2.id,
+              splitMode: 'equal',
+              sharedByIds: [p1.id, p2.id, p3.id],
+              customAmounts: {}
+            }
+          ],
+          completedTransfers: ['p_sy->p_ms']
+        };
+
+        editingParticipantId = null;
+        el.accountEditorBox.classList.add('hidden');
+        el.resetConfirmBar.classList.add('hidden');
+        resetExpenseForm();
+        renderAll();
+        showToast('오사카 해외여행 샘플 데이터를 불러왔어요! ✈️', 'success');
+      }
+
+      function buildKakaoSummaryText() {
+        const { totalSpendKRW, summaries, transfers } = calculateSettlement();
+        const title = state.title.trim() || '모임 정산 결과';
+        const lines = [];
+
+        lines.push(`🧾 [${title}] 정산 안내`);
+        lines.push(`📅 날짜: ${state.date}`);
+        lines.push(`━━━━━━━━━━━━━━━━`);
+        lines.push(`💰 총 지출: ${formatKRW(totalSpendKRW)} (${state.expenses.length}건)`);
+        lines.push(`👥 참석자: ${state.participants.map(p => p.name).join(', ')} (${state.participants.length}명)`);
+        lines.push('');
+
+        const unitTxt = state.roundUnit > 1 ? ` (${state.roundUnit}원 반올림)` : '';
+        lines.push(`💸 최소 송금 내역${unitTxt}`);
+        if (transfers.length === 0) {
+          lines.push(`✅ 모두 정산 완료! 보낼 금액이 없습니다.`);
+        } else {
+          transfers.forEach(t => {
+            const doneMark = state.completedTransfers.includes(t.key) ? ' [완료]' : '';
+            lines.push(`• ${t.fromName} → ${t.toName} : ${t.amount.toLocaleString('ko-KR')}원${doneMark}`);
+            if (t.toAccount) {
+              lines.push(`   └ 계좌: ${t.toAccount}`);
+            }
+          });
+        }
+
+        lines.push('');
+        lines.push(`📊 개인별 지출/부담 요약`);
+        summaries.forEach(s => {
+          lines.push(`• ${s.name}: 낸 돈 ${Math.round(s.paid).toLocaleString('ko-KR')}원 / 쓴 돈 ${Math.round(s.owed).toLocaleString('ko-KR')}원`);
+        });
+
+        lines.push(`━━━━━━━━━━━━━━━━`);
+        lines.push(`✨ 딱깔끔 N빵으로 정산됨`);
+        return lines.join('\n');
+      }
+
+      // ============================================================
+      // 11. Event Listeners
+      // ============================================================
+      el.btnThemeToggle.addEventListener('click', toggleTheme);
+      el.btnLoadSample.addEventListener('click', loadSampleData);
+
+      el.btnResetTrigger.addEventListener('click', () => {
+        if (state.participants.length === 0 && state.expenses.length === 0 && !state.title) {
+          showToast('이미 비어 있어요.');
+          return;
+        }
+        el.resetConfirmBar.classList.toggle('hidden');
+      });
+      el.btnResetCancel.addEventListener('click', () => el.resetConfirmBar.classList.add('hidden'));
+      el.btnResetConfirm.addEventListener('click', () => {
+        state = {
+          title: '',
+          date: getTodayISO(),
+          roundUnit: 10,
+          rates: getDefaultRates(),
+          participants: [],
+          expenses: [],
+          completedTransfers: []
+        };
+        editingParticipantId = null;
+        el.accountEditorBox.classList.add('hidden');
+        el.resetConfirmBar.classList.add('hidden');
+        resetExpenseForm();
+        renderAll();
+        showToast('모든 정산 내역을 초기화했어요.');
+      });
+
+      el.eventTitleInput.addEventListener('input', e => {
+        state.title = e.target.value;
+        persistState();
+      });
+      el.eventDateInput.addEventListener('change', e => {
+        state.date = e.target.value || getTodayISO();
+        persistState();
+      });
+
+      el.btnAddParticipant.addEventListener('click', addParticipant);
+      el.newParticipantName.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addParticipant(); } });
+      el.newParticipantAccount.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addParticipant(); } });
+
+      el.participantChipsContainer.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const { action, id } = btn.dataset;
+        if (action === 'remove-participant') removeParticipant(id);
+        else if (action === 'edit-account') openAccountEditor(id);
+      });
+
+      el.btnSaveAccount.addEventListener('click', saveAccountEdit);
+      el.editAccountInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveAccountEdit(); } });
+      el.btnCloseAccountEditor.addEventListener('click', () => {
+        editingParticipantId = null;
+        el.accountEditorBox.classList.add('hidden');
+        renderParticipants();
+      });
+
+      // Exchange Rate Panel
+      el.btnToggleRatePanel.addEventListener('click', () => {
+        el.exchangeRatePanel.classList.toggle('hidden');
+      });
+      el.exchangeRateInputs.addEventListener('input', e => {
+        const input = e.target.closest('.rate-input');
+        if (!input) return;
+        const code = input.dataset.rateCode;
+        const val = parseFloat(input.value);
+        if (!isNaN(val) && val > 0) {
+          state.rates[code] = val;
+          updateFxPreview();
+          renderExpensesList();
+          renderAnalyticsAndSettlement();
+          persistState();
+        }
+      });
+      el.btnResetRates.addEventListener('click', () => {
+        state.rates = getDefaultRates();
+        renderAll();
+        showToast('환율을 기본값으로 복원했어요.');
+      });
+
+      // Expense Form Controls
+      el.expenseCurrency.addEventListener('change', () => {
+        updateFxPreview();
+        renderExpenseFormControls();
+      });
+
+      el.expenseAmount.addEventListener('input', e => {
+        e.target.value = formatNumericInputString(e.target.value);
+        updateFxPreview();
+        if (currentSplitMode === 'custom') updateCustomSplitStatus();
+      });
+
+      el.categoryPillsContainer.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-action="select-category"]');
+        if (!btn) return;
+        selectedCategory = btn.dataset.cat;
+        renderCategoryPills();
+      });
+
+      el.tabSplitEqual.addEventListener('click', () => {
+        currentSplitMode = 'equal';
+        renderExpenseFormControls();
+      });
+      el.tabSplitCustom.addEventListener('click', () => {
+        currentSplitMode = 'custom';
+        renderExpenseFormControls();
+      });
+
+      el.sharedByContainer.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-action="toggle-shared"]');
+        if (!btn) return;
+        const id = btn.dataset.id;
+        if (selectedSharedIds.has(id)) selectedSharedIds.delete(id);
+        else selectedSharedIds.add(id);
+        renderExpenseFormControls();
+      });
+
+      el.btnToggleSelectAll.addEventListener('click', () => {
+        if (selectedSharedIds.size === state.participants.length) selectedSharedIds.clear();
+        else selectedSharedIds = new Set(state.participants.map(p => p.id));
+        renderExpenseFormControls();
+      });
+
+      el.customSplitInputs.addEventListener('input', e => {
+        const input = e.target.closest('.custom-amt-input');
+        if (!input) return;
+        const pid = input.dataset.customPid;
+        const formatted = formatNumericInputString(input.value);
+        input.value = formatted;
+        customDraftAmounts[pid] = formatted;
+        updateCustomSplitStatus();
+      });
+
+      el.btnDistributeRemainder.addEventListener('click', distributeCustomRemainder);
+      el.btnCancelEdit.addEventListener('click', resetExpenseForm);
+      el.btnAddExpense.addEventListener('click', submitExpense);
+
+      // Expense List Clicks (Edit Card or Delete Button)
+      el.expenseListContainer.addEventListener('click', e => {
+        const delBtn = e.target.closest('button[data-action="delete-expense"]');
+        if (delBtn) {
+          e.stopPropagation();
+          const id = delBtn.dataset.id;
+          state.expenses = state.expenses.filter(ex => ex.id !== id);
+          if (editingExpenseId === id) resetExpenseForm();
+          renderAll();
+          showToast('지출 내역을 삭제했어요.');
+          return;
+        }
+        const card = e.target.closest('[data-action="edit-expense"]');
+        if (card) {
+          loadExpenseIntoEditMode(card.dataset.id);
+        }
+      });
+
+      // Rounding Unit Selector (1 / 10 / 100)
+      document.querySelectorAll('.unit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.roundUnit = Number(btn.dataset.unit);
+          renderAnalyticsAndSettlement();
+          persistState();
+        });
+      });
+
+      // Transfers List Clicks (Toggle Done / Copy Account)
+      el.transfersContainer.addEventListener('click', e => {
+        const toggleBtn = e.target.closest('button[data-action="toggle-transfer-done"]');
+        if (toggleBtn) {
+          const key = toggleBtn.dataset.key;
+          if (state.completedTransfers.includes(key)) {
+            state.completedTransfers = state.completedTransfers.filter(k => k !== key);
+          } else {
+            state.completedTransfers.push(key);
+          }
+          renderAnalyticsAndSettlement();
+          persistState();
+          return;
+        }
+        const copyBtn = e.target.closest('button[data-action="copy-account"]');
+        if (copyBtn) {
+          copyTextToClipboard(copyBtn.dataset.account, `${copyBtn.dataset.name}님 계좌번호를 복사했어요!`);
+        }
+      });
+
+      // Breakdown Accordion
+      el.btnToggleBreakdown.addEventListener('click', () => {
+        isBreakdownOpen = !isBreakdownOpen;
+        el.breakdownTableContainer.classList.toggle('hidden', !isBreakdownOpen);
+        el.breakdownArrow.style.transform = isBreakdownOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      });
+
+      // Receipt Modal & Download
+      el.btnOpenReceipt.addEventListener('click', () => {
+        if (state.expenses.length === 0 || state.participants.length === 0) {
+          showToast('영수증으로 만들 정산 내역을 먼저 입력해주세요.', 'error');
+          return;
+        }
+        try {
+          lastReceiptDataUrl = generateReceiptPNG();
+          el.receiptPreviewImg.src = lastReceiptDataUrl;
+          el.receiptModal.classList.remove('hidden');
+        } catch (err) {
+          console.error('Receipt render error:', err);
+          showToast('영수증 이미지 생성 중 오류가 발생했습니다.', 'error');
+        }
+      });
+
+      function closeReceiptModal() {
+        el.receiptModal.classList.add('hidden');
+      }
+      el.btnCloseReceiptModal.addEventListener('click', closeReceiptModal);
+      el.btnCloseReceiptBottom.addEventListener('click', closeReceiptModal);
+      el.receiptModal.addEventListener('click', e => {
+        if (e.target === el.receiptModal) closeReceiptModal();
+      });
+
+      el.btnDownloadReceipt.addEventListener('click', () => {
+        if (!lastReceiptDataUrl) return;
+        const link = document.createElement('a');
+        const safeTitle = (state.title.trim() || '딱깔끔N빵').replace(/[\\/:*?"<>|]/g, '_');
+        link.download = `${safeTitle}_정산영수증.png`;
+        link.href = lastReceiptDataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('영수증 PNG 이미지를 저장했어요! 🧾', 'success');
+      });
+
+      // Share Buttons
+      el.btnCopyKakao.addEventListener('click', () => {
+        if (state.expenses.length === 0) {
+          showToast('복사할 정산 내역이 없어요.', 'error');
+          return;
+        }
+        copyTextToClipboard(buildKakaoSummaryText(), '카톡용 정산 결과를 복사했어요!');
+      });
+
+      el.btnCopyLink.addEventListener('click', () => {
+        if (state.participants.length === 0 && state.expenses.length === 0) {
+          showToast('공유할 내용을 먼저 입력해주세요.', 'error');
+          return;
+        }
+        const encoded = encodeStateToHash(state);
+        if (!encoded) {
+          showToast('공유 링크 생성에 실패했어요.', 'error');
+          return;
+        }
+        const baseUrl = window.location.href.split('#')[0];
+        const shareUrl = `${baseUrl}#data=${encoded}`;
+        persistState();
+        copyTextToClipboard(shareUrl, '공유 링크를 복사했어요! 친구에게 보내보세요.');
+      });
+
+      // Toggle Ad Banner Placeholders (Preview Helper)
+      el.btnToggleAdSlots.addEventListener('click', () => {
+        isAdVisible = !isAdVisible;
+        document.querySelectorAll('.ad-banner-wrapper').forEach(node => {
+          node.classList.toggle('hidden', !isAdVisible);
+        });
+        el.btnToggleAdSlots.textContent = isAdVisible ? '광고 영역 숨기기 (미리보기용)' : '광고 영역 다시 보기';
+      });
+
+      // ============================================================
+      // 12. Initialization
+      // ============================================================
+      function initApp() {
+        initTheme();
+
+        const fromHash = decodeStateFromHash(window.location.hash);
+        if (fromHash) {
+          state = fromHash;
+          selectedSharedIds = new Set(state.participants.map(p => p.id));
+          renderAll();
+          showToast('공유된 정산 내역을 불러왔어요!', 'success');
+          return;
+        }
+
+        const fromStorage = loadFromLocalStorage();
+        if (fromStorage) {
+          state = fromStorage;
+          selectedSharedIds = new Set(state.participants.map(p => p.id));
+          renderAll();
+          return;
+        }
+
+        renderAll();
+      }
+
+      window.addEventListener('hashchange', () => {
+        const fromHash = decodeStateFromHash(window.location.hash);
+        if (fromHash) {
+          state = fromHash;
+          selectedSharedIds = new Set(state.participants.map(p => p.id));
+          renderAll();
+          showToast('공유 링크의 정산 내역으로 업데이트했어요.');
+        }
+      });
+
+      initApp();
+    })();
+  </script>
+</body>
+</html>
